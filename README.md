@@ -1,2 +1,2 @@
-# Express-JSON-Web-Token-Default-Template
-This is a default express template for projects that want to use JSON web tokens on the backend and frontend for authentication and authorization.
+# Where's Waldo
+This is a where's waldo style, photo tagging web application whereby users can find the position of certain characters on a photo with the answers stored on the backend.
