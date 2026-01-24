@@ -1,12 +1,10 @@
 import React from "react";
 import styles from "./CharacterHeaderDisplay.module.css";
+import { ICharacter } from "../../../models/IPlayContextHandle";
 
 
 type ICharacterHeaderDisplayProps = {
-    characters: {
-        name: string;
-        img: string;
-    }[]
+    characters: ICharacter[]
 }
 
 export function CharacterHeaderDisplay({
@@ -19,10 +17,14 @@ export function CharacterHeaderDisplay({
 
                 <React.Fragment key={character.name + indx}>
 
-                    <div className={styles.imgContainer}>
-                        <img src={character.img} alt={`Character Image: ${character.name}`} />
+                    <div className={styles.characterContainer}>
+
+                        <div className={styles.imgContainer}>
+                            <img src={character.imgUrl} alt={`Character Image: ${character.name}`} />
+                        </div>
+                        <p className={styles.name}>{character.name}</p>
+
                     </div>
-                    <p>{character.name}</p>
                 
                 </React.Fragment>
 

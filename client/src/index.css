@@ -1,24 +1,28 @@
 @font-face {
-  font-family: "Roboto";
-  src: url("../public/fonts/Roboto_Condensed/RobotoCondensed-VariableFont_wght.ttf") format("truetype");
+  font-family: "Orbitron";
+  src: url("../public/fonts/Orbitron/Orbitron-VariableFont_wght.ttf") format("truetype");
   font-weight: 400;
   font-style: normal;
   font-display: swap;
-  
+
 }
 
 
 :root {
   font-size: 62.5%;
 
-  --soft-light-colour: #e0e0e0;
+  /* --soft-light-colour: #e0e0e0;
   --dark-container-colour: rgb(20, 20, 20);
 
-  --blue-selected-button-colour: rgb(0, 178, 190);
+  --blue-selected-button-colour: rgb(0, 178, 190); */
   /* --dark-consistent-bg-header-colour: rgb(29, 29, 29); */
 
   /* --blue-button-colour: rgb(0, 89, 255);
   --hover-button-colour: rgb(0, 65, 185); */
+
+  --dark-blue-colour: rgb(37, 42, 66);
+  --grey-colour: rgb(85, 85, 85);
+  --border-radius: .3rem;
 }
 
 *,
@@ -40,7 +44,7 @@
 
 html,
 body {
-  font-family: "Roboto", "Segoe UI", Roboto, system-ui, -apple-system, "Helvetica Neue", Arial, sans-serif;
+  font-family: "Orbitron", "Segoe UI", Roboto, system-ui, -apple-system, "Helvetica Neue", Arial, sans-serif;
   font-size-adjust: 0.5;
   position: relative;
 

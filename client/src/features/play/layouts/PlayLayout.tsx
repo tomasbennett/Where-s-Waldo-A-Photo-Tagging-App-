@@ -1,4 +1,4 @@
-import { useEffect, useMemo } from "react";
+import { useEffect, useMemo, useRef } from "react";
 import styles from "./PlayLayout.module.css";
 import { Navigate, Outlet, useMatches, useNavigate } from "react-router-dom";
 import { IPlayContextHandle, PlayContextHandleSchema } from "../../../models/IPlayContextHandle";
@@ -10,6 +10,10 @@ import { CharacterClickDisplay } from "../components/CharacterClickDisplay";
 
 
 export function PlayLayout() {
+
+    const mainImgRef = useRef<HTMLImageElement | null>(null);
+    const mainImgContainerRef = useRef<HTMLDivElement | null>(null);
+    const mainOverflowContainerRef = useRef<HTMLDivElement | null>(null);
 
     const matches = useMatches();
 
@@ -52,39 +56,53 @@ export function PlayLayout() {
     }, [playHandle]);
 
 
+    const calculateLayout = () => {
+
+    };
+
+    useEffect(() => {
+        const observer = new ResizeObserver(calculateLayout);
+        if (mainOverflowContainerRef.current) {
+            observer.observe(mainOverflowContainerRef.current);
+        }
+
+        return () => observer.disconnect();
+    }, []);
+
+
+
+
     return (
 
         <>
 
             <Outlet />
 
-            <div className={styles.playLayoutContainer}>
+            <div ref={mainOverflowContainerRef} className={styles.playLayoutContainer}>
+
                 <div className={styles.headerSpace}>
 
                     <div className={styles.headerMoving}>
 
                         <Timer />
 
-                        {
-                            playHandle.characters.map((character, index) => (
-                                <CharacterHeaderDisplay
-                                    key={character.name + index}
-                                    name={character.name}
-                                    img={character.imgUrl} />
-                            ))
-                        }
+
+                        <CharacterHeaderDisplay characters={playHandle.characters} />
+
 
                     </div>
 
                 </div>
 
-                <div className={styles.mainImageContainer}>
+                <div ref={mainImgContainerRef} className={styles.mainImageContainer}>
 
-                    <img src={playHandle.imgUrl} alt={`Main Image: ${playHandle.backendRoute}`} />
+                    <img ref={mainImgRef} src={playHandle.imgUrl} alt={`Main Image: ${playHandle.backendRoute}`} />
 
-                    <CharacterClickDisplay />
+                    <CharacterClickDisplay characters={playHandle.characters} />
 
                 </div>
+
+
 
 
             </div>
