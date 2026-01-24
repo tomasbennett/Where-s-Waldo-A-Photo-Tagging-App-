@@ -1,12 +1,10 @@
 
 import { Navigate, RouterProvider, createBrowserRouter } from 'react-router-dom'
 import { GeneralHomeLayout } from './layouts/GeneralHomeLayout'
-import { SignInLayout } from './features/auth/layouts/SignInLayout'
-import { NotAuthenticatedRoute, ProtectedRoute } from './features/auth/services/ProtectedRoute'
 import { ErrorElement } from './features/error/services/ErrorElement'
 import { ErrorPageLayout } from './features/error/layouts/ErrorLayout'
-import { AboutPage } from './components/AboutPage'
-import { ContactsPage } from './components/ContactsPage'
+import { PlayLayout } from './features/play/layouts/PlayLayout'
+import { fantasyPlayContextHandle, sciFiPlayContextHandle } from './features/play/constants'
 
 
 const router = createBrowserRouter([
@@ -17,49 +15,31 @@ const router = createBrowserRouter([
     children: [
       {
         index: true,
-        element: <Navigate to="about" replace />
+        element: <Navigate to="home" replace />
       },
       {
         path: "error",
         element: <ErrorPageLayout />,
       },
       {
-        element: <ProtectedRoute />,
-        children: [
-          {
-            path: "sign-in",
-            element: <SignInLayout />,
-            children: [
-              {
-                index: true,
-                element: <Navigate to="login" replace />,
-              },
-              {
-                path: "login",
-                handle: {
-                  title: "Login",
-                }
-              },
-              {
-                path: "register",
-                handle: {
-                  title: "Register",
-                }
-              }
-            ]
-          }
-        ]
+        path: "home",
+        element: <p>HOME PAGE</p>
       },
       {
-        element: <NotAuthenticatedRoute />,
+        path: "play",
+        element: <PlayLayout />,
         children: [
           {
-            path: "about",
-            element: <AboutPage />
+            index: true,
+            element: <Navigate to="/home" replace />
           },
           {
-            path: "contacts",
-            element: <ContactsPage />
+            path: "fantasy",
+            handle: fantasyPlayContextHandle
+          },
+          {
+            path: "sci-fi",
+            handle: sciFiPlayContextHandle
           }
         ]
       }
