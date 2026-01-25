@@ -8,6 +8,13 @@ import hoodedCyborgImg from "../../assets/images/sci-fi/scifi-characters/hooded-
 import hologramImg from "../../assets/images/sci-fi/scifi-characters/hologram.png";
 import skiGogglesHumanImg from "../../assets/images/sci-fi/scifi-characters/ski-goggles.png";
 
+import cartographerImg from "../../assets/images/fantasy/fantasy-characters/cartogripher.png";
+import knightImg from "../../assets/images/fantasy/fantasy-characters/Knight.png";
+import wizardImg from "../../assets/images/fantasy/fantasy-characters/wizard.png";
+
+import notBatwomanImg from "../../assets/images/superheroes/superhero-characters/not-batwoman.png";
+import notWonderwomanImg from "../../assets/images/superheroes/superhero-characters/not-wonderwoman.png";
+import notScarecrowImg from "../../assets/images/superheroes/superhero-characters/not-scarecrow.png";
 
 
 
@@ -15,16 +22,16 @@ export const fantasyPlayContextHandle: IPlayContextHandle = {
     imgUrl: fantasyImg,
     characters: [
         {
-            name: "Elf Warrior",
-            imgUrl: "https://example.com/images/elf_warrior.png"
+            name: "Cartographer",
+            imgUrl: cartographerImg
         },
         {
-            name: "Dwarf Miner",
-            imgUrl: "https://example.com/images/dwarf_miner.png"
+            name: "Knight",
+            imgUrl: knightImg
         },
         {
-            name: "Human Mage",
-            imgUrl: "https://example.com/images/human_mage.png"
+            name: "Wizard",
+            imgUrl: wizardImg
         }
     ],
     backendRoute: "fantasy"
@@ -51,21 +58,24 @@ export const sciFiPlayContextHandle: IPlayContextHandle = {
 }
 
 
-// export const superHeroPlayContextHandle: IPlayContextHandle = {
-//     imgUrl: superHeroImg,
-//     characters: [
-//         {
-
-//         },
-//         {
-
-//         },
-//         {
-
-//         },
-//     ],
-//     backendRoute: "super-heroes"
-// }
+export const superHeroPlayContextHandle: IPlayContextHandle = {
+    imgUrl: superHeroImg,
+    characters: [
+        {
+            name: "Not Batwoman",
+            imgUrl: notBatwomanImg
+        },
+        {
+            name: "Not Wonderwoman",
+            imgUrl: notWonderwomanImg
+        },
+        {
+            name: "Not Scarecrow",
+            imgUrl: notScarecrowImg
+        },
+    ],
+    backendRoute: "super-heroes"
+}
 
 
 export const minAspectRatio: number = 0.8;

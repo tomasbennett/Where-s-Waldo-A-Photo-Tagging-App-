@@ -12,7 +12,7 @@ import { CharacterClickDisplay } from "../components/CharacterClickDisplay";
 export function PlayLayout() {
 
     const mainImgRef = useRef<HTMLImageElement | null>(null);
-    const mainImgContainerRef = useRef<HTMLDivElement | null>(null);
+    const headerContainerRef = useRef<HTMLDivElement | null>(null);
     const mainOverflowContainerRef = useRef<HTMLDivElement | null>(null);
 
     const matches = useMatches();
@@ -57,17 +57,62 @@ export function PlayLayout() {
 
 
     const calculateLayout = () => {
+        if (!mainImgRef.current || !headerContainerRef.current || !mainOverflowContainerRef.current) {
+            console.log("One or more refs are null, cannot calculate layout!!!");
+            return;
+        }
+
+
+        const imgNaturalWidth = mainImgRef.current.naturalWidth;
+        const imgNaturalHeight = mainImgRef.current.naturalHeight;
+
+        // const headerHeight = headerContainerRef.current.getBoundingClientRect().height;
+
+        // const mainRect = mainOverflowContainerRef.current.getBoundingClientRect();
+        // const containerWidth = mainRect.width;
+        // const availableHeight = mainRect.height - headerHeight;
+
+        // const widthRatio = containerWidth / availableHeight;
+
+        //I'M BEING SILLY HERE AND NO MATTER WHAT THE ASPECT RATIO OF THE IMAGE IS WE GROW ONLY HEIGHT OR WIDTH BASED ON WHAT THE ASPECT RATIO IS MAKING SURE THAT HEIGHT IS 100% OF THE CONTAINER AND WIDTH IS AUTO IF THE ASPECT RATIO > 1
+
+
+        if (imgNaturalWidth / imgNaturalHeight > 1) {
+            // WIDE IMAGE
+            mainImgRef.current.style.height = `100%`;
+            mainImgRef.current.style.width = `auto`;
+        } else {
+            // TALL IMAGE
+            mainImgRef.current.style.width = `100%`;
+            mainImgRef.current.style.height = `auto`;
+
+        }
+        
+
 
     };
 
-    useEffect(() => {
-        const observer = new ResizeObserver(calculateLayout);
-        if (mainOverflowContainerRef.current) {
-            observer.observe(mainOverflowContainerRef.current);
-        }
 
-        return () => observer.disconnect();
-    }, []);
+
+    // const observer = useRef<ResizeObserver | null>(null);
+
+
+    // const addResizeObserver = () => {
+    //     observer.current = new ResizeObserver(calculateLayout);
+    //     if (mainOverflowContainerRef.current) {
+    //         observer.current.observe(mainOverflowContainerRef.current);
+    //     }
+
+    // }
+
+    // useEffect(() => {
+
+    //     return () => {
+    //         if (observer.current) {
+    //             observer.current.disconnect()
+    //         }
+    //     };
+    // }, []);
 
 
 
@@ -80,7 +125,7 @@ export function PlayLayout() {
 
             <div ref={mainOverflowContainerRef} className={styles.playLayoutContainer}>
 
-                <div className={styles.headerSpace}>
+                <div ref={headerContainerRef} className={styles.headerSpace}>
 
                     <div className={styles.headerMoving}>
 
@@ -94,9 +139,12 @@ export function PlayLayout() {
 
                 </div>
 
-                <div ref={mainImgContainerRef} className={styles.mainImageContainer}>
+                <div className={styles.mainImageContainer}>
 
-                    <img ref={mainImgRef} src={playHandle.imgUrl} alt={`Main Image: ${playHandle.backendRoute}`} />
+                    <img onLoad={() => {
+                        calculateLayout();
+                        // addResizeObserver();
+                    }} ref={mainImgRef} src={playHandle.imgUrl} alt={`Main Image: ${playHandle.backendRoute}`} />
 
                     <CharacterClickDisplay characters={playHandle.characters} />
 
