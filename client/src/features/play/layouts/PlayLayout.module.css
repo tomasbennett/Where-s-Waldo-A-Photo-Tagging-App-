@@ -10,6 +10,9 @@
 }
 
 
+
+
+
 .headerSpace{
     width: 100%;
     
@@ -42,18 +45,38 @@
 .mainImageContainer{
     width: 100%;
     flex: 1 1 0;
-    /* height: 100%; */
-
-    padding: 0 2rem;
 
     display: flex;
     align-items: center;
     justify-content: center;
 
     /* overflow: auto; */
-
-    & img{
+    
+    & img[data-img-ratio="tall"]{
         box-shadow: 0 1rem 1rem black;
+
+        width: 100%;
+        height: auto;
+    }
+    
+    & img[data-img-ratio="wide"]{
+        box-shadow: 1rem 0 1rem black;
+
+        width: auto;
+        height: 100%;
     }
 
+
+
+}
+
+
+.mainImageContainer[data-img-ratio="wide"]{
+    padding: 2rem 0;
+
+    overflow: auto;
+}
+
+.mainImageContainer[data-img-ratio="tall"]{
+    padding: 0 2rem;
 }

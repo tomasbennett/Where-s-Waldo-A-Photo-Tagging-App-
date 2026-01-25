@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import styles from "./PlayLayout.module.css";
 import { Navigate, Outlet, useMatches, useNavigate } from "react-router-dom";
 import { IPlayContextHandle, PlayContextHandleSchema } from "../../../models/IPlayContextHandle";
@@ -56,6 +56,10 @@ export function PlayLayout() {
     }, [playHandle]);
 
 
+
+    const [mainImgRatio, setMainImgRatio] = useState<"wide" | "tall" | null>(null);
+
+
     const calculateLayout = () => {
         if (!mainImgRef.current || !headerContainerRef.current || !mainOverflowContainerRef.current) {
             console.log("One or more refs are null, cannot calculate layout!!!");
@@ -66,25 +70,17 @@ export function PlayLayout() {
         const imgNaturalWidth = mainImgRef.current.naturalWidth;
         const imgNaturalHeight = mainImgRef.current.naturalHeight;
 
-        // const headerHeight = headerContainerRef.current.getBoundingClientRect().height;
-
-        // const mainRect = mainOverflowContainerRef.current.getBoundingClientRect();
-        // const containerWidth = mainRect.width;
-        // const availableHeight = mainRect.height - headerHeight;
-
-        // const widthRatio = containerWidth / availableHeight;
-
-        //I'M BEING SILLY HERE AND NO MATTER WHAT THE ASPECT RATIO OF THE IMAGE IS WE GROW ONLY HEIGHT OR WIDTH BASED ON WHAT THE ASPECT RATIO IS MAKING SURE THAT HEIGHT IS 100% OF THE CONTAINER AND WIDTH IS AUTO IF THE ASPECT RATIO > 1
-
 
         if (imgNaturalWidth / imgNaturalHeight > 1) {
             // WIDE IMAGE
-            mainImgRef.current.style.height = `100%`;
-            mainImgRef.current.style.width = `auto`;
+            setMainImgRatio("wide");
+            // mainImgRef.current.style.height = `100%`;
+            // mainImgRef.current.style.width = `auto`;
         } else {
             // TALL IMAGE
-            mainImgRef.current.style.width = `100%`;
-            mainImgRef.current.style.height = `auto`;
+            setMainImgRatio("tall");
+            // mainImgRef.current.style.width = `100%`;
+            // mainImgRef.current.style.height = `auto`;
 
         }
         
@@ -123,9 +119,9 @@ export function PlayLayout() {
 
             <Outlet />
 
-            <div ref={mainOverflowContainerRef} className={styles.playLayoutContainer}>
+            <div data-img-ratio={mainImgRatio} ref={mainOverflowContainerRef} className={styles.playLayoutContainer}>
 
-                <div ref={headerContainerRef} className={styles.headerSpace}>
+                <div data-img-ratio={mainImgRatio} ref={headerContainerRef} className={styles.headerSpace}>
 
                     <div className={styles.headerMoving}>
 
@@ -139,9 +135,9 @@ export function PlayLayout() {
 
                 </div>
 
-                <div className={styles.mainImageContainer}>
+                <div data-img-ratio={mainImgRatio} className={styles.mainImageContainer}>
 
-                    <img onLoad={() => {
+                    <img data-img-ratio={mainImgRatio} onLoad={() => {
                         calculateLayout();
                         // addResizeObserver();
                     }} ref={mainImgRef} src={playHandle.imgUrl} alt={`Main Image: ${playHandle.backendRoute}`} />
