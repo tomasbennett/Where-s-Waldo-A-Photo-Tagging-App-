@@ -8,6 +8,6 @@
       "esModuleInterop": true,
       "strict": true
     },
-    "include": ["./seed.ts", "../../shared/**/*.ts"],
+    "include": ["./seed.ts", "../../shared/**/*.ts", "./models/**/*.ts"],
     "exclude": ["../node_modules"] // "./src/**/*.d.ts", 
   }

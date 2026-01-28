@@ -3,6 +3,7 @@ import { Prisma, PrismaClient } from '@prisma/client';
 // import "dotenv/config";
 import dotenv from "dotenv";
 import { GameToCharactersNameMap, IAllGameID } from '../../shared/features/play/models/ISharedDefaultGameDetails';
+import { INewBackendCharacterDataMap } from './models/INewBackendCharacterStructure';
 dotenv.config({
     path: "../.env"
 });
@@ -12,18 +13,7 @@ dotenv.config({
 const prisma = new PrismaClient();
 
 
-type INewBackendCharacterData = {
-    xCoordinate: number
-    yCoordinate: number
-    width: number
-    height: number
-}
 
-type INewBackendCharacterDataMap = {
-    [K in IAllGameID]: {
-        [C in GameToCharactersNameMap[K]]: INewBackendCharacterData
-    }
-}
 
 
 const newBackendCharacterDataMap: INewBackendCharacterDataMap = {
@@ -126,21 +116,23 @@ async function buildDefaultValues(): Promise<Prisma.GameCreateInput[]> {
     //     }
     // };
 
-    const defaultFantasyGame: Prisma.GameCreateInput = {
-        name: 'fantasy',
+
+
+
+    const defaultGames: Prisma.GameCreateInput[] = Object.entries(newBackendCharacterDataMap).map(([gameKey, charactersMap]) => ({
+        name: gameKey,
         characters: {
             createMany: {
-                data: [
-
-                ]
+                data: Object.entries(charactersMap).map(([charName, charData]) => ({
+                    name: charName,
+                    xCoordinate: charData.xCoordinate,
+                    yCoordinate: charData.yCoordinate,
+                    width: charData.width,
+                    height: charData.height
+                }))
             }
         }
-    }
-
-
-    const defaultGames: Prisma.GameCreateInput[] = [
-        defaultFantasyGame
-    ];
+    }));
 
     return defaultGames;
 }
