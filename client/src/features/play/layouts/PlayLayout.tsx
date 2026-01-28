@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import styles from "./PlayLayout.module.css";
 import { Navigate, Outlet, useMatches, useNavigate } from "react-router-dom";
-import { IPlayContextHandle, PlayContextHandleSchema } from "../../../models/IPlayContextHandle";
+import { IPlayContextHandle, PlayContextHandleSchema } from "../models/IPlayContextHandle";
 import { IHomePageErrors } from "../../../models/IHomePageErrors";
 import { Timer } from "../components/Timer";
 import { CharacterHeaderDisplay } from "../components/CharacterHeaderDisplay";

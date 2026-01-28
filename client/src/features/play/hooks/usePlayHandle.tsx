@@ -1,7 +1,7 @@
 import { useMemo, useEffect } from "react";
 import { useMatches, Navigate } from "react-router-dom";
 import { IHomePageErrors } from "../../../models/IHomePageErrors";
-import { IPlayContextHandle, PlayContextHandleSchema } from "../../../models/IPlayContextHandle";
+import { IPlayContextHandle, PlayContextHandleSchema } from "../models/IPlayContextHandle";
 
 export function usePlayHandle() {
 

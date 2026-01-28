@@ -1,6 +1,6 @@
 import React from 'react';
 import styles from './CharacterClickDisplay.module.css';
-import { ICharacter } from '../../../models/IPlayContextHandle';
+import { ICharacter } from '../models/IPlayContextHandle';
 
 type ICharacterClickDisplayProps = {
     characters: ICharacter[]

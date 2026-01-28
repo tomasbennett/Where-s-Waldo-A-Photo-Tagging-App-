@@ -1,6 +1,6 @@
 import React from "react";
 import styles from "./CharacterHeaderDisplay.module.css";
-import { ICharacter } from "../../../models/IPlayContextHandle";
+import { ICharacter } from "../models/IPlayContextHandle";
 
 
 type ICharacterHeaderDisplayProps = {
