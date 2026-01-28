@@ -29,62 +29,62 @@ type INewBackendCharacterDataMap = {
 const newBackendCharacterDataMap: INewBackendCharacterDataMap = {
     "fantasy": {
         "Cartographer": {
-            xCoordinate: 100,
-            yCoordinate: 150,
-            width: 64,
-            height: 64
+            xCoordinate: 771,
+            yCoordinate: 514,
+            width: 72,
+            height: 74
         },
         "Knight": {
-            xCoordinate: 200,
-            yCoordinate: 150,
-            width: 64,
-            height: 64
+            xCoordinate: 343,
+            yCoordinate: 962,
+            width: 77,
+            height: 249
         },
         "Wizard": {
-            xCoordinate: 300,
-            yCoordinate: 150,
-            width: 64,
-            height: 64
+            xCoordinate: 115,
+            yCoordinate: 112,
+            width: 91,
+            height: 208
         }
     },
     "sci-fi": {
         "Hologram": {
-            xCoordinate: 120,
-            yCoordinate: 180,
-            width: 70,
-            height: 70
+            xCoordinate: 527,
+            yCoordinate: 602,
+            width: 55,
+            height: 128
         },
         "Hooded Cyborg": {
-            xCoordinate: 220,
-            yCoordinate: 180,
-            width: 70,
-            height: 70
+            xCoordinate: 885,
+            yCoordinate: 1371,
+            width: 114,
+            height: 154
         },
         "Ski Goggles Human": {
-            xCoordinate: 320,
-            yCoordinate: 180,
-            width: 70,
-            height: 70
+            xCoordinate: 336,
+            yCoordinate: 1394,
+            width: 67,
+            height: 131
         }
     },
     "super-heroes": {
         "Not Batwoman": {
-            xCoordinate: 130,
-            yCoordinate: 200,
-            width: 80,
-            height: 80
+            xCoordinate: 852,
+            yCoordinate: 25,
+            width: 74,
+            height: 101
         },
         "Not Scarecrow": {
-            xCoordinate: 230,
-            yCoordinate: 200,
-            width: 80,
-            height: 80
+            xCoordinate: 653,
+            yCoordinate: 455,
+            width: 55,
+            height: 76
         },
         "Not Wonderwoman": {
-            xCoordinate: 330,
-            yCoordinate: 200,
-            width: 80,
-            height: 80
+            xCoordinate: 858,
+            yCoordinate: 612,
+            width: 93,
+            height: 343
         }
     }
 };

@@ -164,7 +164,7 @@ const enrichedCharactersByGame = {
 
 
 
-const allPlayContextHandles = allGamesSharedDetails.map(game => ({
+export const allPlayContextHandles: IPlayContextHandle[] = allGamesSharedDetails.map(game => ({
     ...game,
     imgUrl: allGamesExtraFrontendData[game.gameName].imgUrl,
     characters: enrichedCharactersByGame[game.gameName],
