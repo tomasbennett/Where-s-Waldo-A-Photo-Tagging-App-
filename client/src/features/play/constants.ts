@@ -97,25 +97,25 @@ const allGamesExtraFrontendData = {
     "fantasy": {
         imgUrl: fantasyImg,
         characters: {
-            "Cartographer": { imgUrl: cartographerImg },
-            "Knight": { imgUrl: knightImg },
-            "Wizard": { imgUrl: wizardImg }
+            "Cartographer": { imgUrl: cartographerImg, isFound: false },
+            "Knight": { imgUrl: knightImg, isFound: false },
+            "Wizard": { imgUrl: wizardImg, isFound: false }
         }
     },
     "sci-fi": {
         imgUrl: sciFiImg,
         characters: {
-            "Hooded Cyborg": { imgUrl: hoodedCyborgImg },
-            "Hologram": { imgUrl: hologramImg },
-            "Ski Goggles Human": { imgUrl: skiGogglesHumanImg }
+            "Hooded Cyborg": { imgUrl: hoodedCyborgImg, isFound: false },
+            "Hologram": { imgUrl: hologramImg, isFound: false },
+            "Ski Goggles Human": { imgUrl: skiGogglesHumanImg, isFound: false }
         }
     },
     "super-heroes": {
         imgUrl: superHeroImg,
         characters: {
-            "Not Batwoman": { imgUrl: notBatwomanImg },
-            "Not Wonderwoman": { imgUrl: notWonderwomanImg },
-            "Not Scarecrow": { imgUrl: notScarecrowImg }
+            "Not Batwoman": { imgUrl: notBatwomanImg, isFound: false },
+            "Not Wonderwoman": { imgUrl: notWonderwomanImg, isFound: false },
+            "Not Scarecrow": { imgUrl: notScarecrowImg, isFound: false }
         }
     }
 } as const satisfies IAllGamesExtraFrontendData;
@@ -149,14 +149,17 @@ const enrichedCharactersByGame = {
     fantasy: fantasySharedGameDetails.characters.map(char => ({
         ...char,
         imgUrl: allGamesExtraFrontendData.fantasy.characters[char.name].imgUrl,
+        isFound: allGamesExtraFrontendData.fantasy.characters[char.name].isFound
     })),
     "sci-fi": sciFiSharedGameDetails.characters.map(char => ({
         ...char,
         imgUrl: allGamesExtraFrontendData["sci-fi"].characters[char.name].imgUrl,
+        isFound: allGamesExtraFrontendData["sci-fi"].characters[char.name].isFound
     })),
     "super-heroes": superHeroSharedGameDetails.characters.map(char => ({
         ...char,
         imgUrl: allGamesExtraFrontendData["super-heroes"].characters[char.name].imgUrl,
+        isFound: allGamesExtraFrontendData["super-heroes"].characters[char.name].isFound
     })),
 } satisfies {
         [K in IAllGameID]: Array<GameToCharactersMap[K] & INewCharacterFrontendData>;

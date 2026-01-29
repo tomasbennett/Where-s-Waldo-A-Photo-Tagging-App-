@@ -6,6 +6,7 @@ export type INewGameFrontendData = {
 
 export type INewCharacterFrontendData = {
     imgUrl: string;
+    isFound: boolean;
 }
 
 

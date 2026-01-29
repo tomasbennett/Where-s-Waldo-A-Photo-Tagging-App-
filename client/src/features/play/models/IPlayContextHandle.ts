@@ -5,7 +5,8 @@ import { CharacterSharedSchema, SharedPlayDetailsSchema } from "../../../../../s
 export const CharacterSchema = CharacterSharedSchema.extend({
     imgUrl: z.string(
         { message: "Character image URL is required as a string!!!" }
-    )
+    ),
+    isFound: z.boolean({ message: "Character isFound status is required as a boolean!!!" })
 });
 
 
