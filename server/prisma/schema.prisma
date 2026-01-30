@@ -15,68 +15,65 @@ datasource db {
 
 
 
-
-
-
-
-
-
-
-// model User {
-//   id       String @id @default(uuid()) @db.Uuid
-//   username String @unique
-
-
-//   leaderboardEntries LeaderboardEntry[]
-
-// }
-
 model Game {
-  id        String   @id @default(uuid()) @db.Uuid
-  name      String  @unique
-  
+  id   String @id @default(uuid()) @db.Uuid
+  name String @unique
+
   characters Character[]
 
-  leaderboardEntries LeaderboardEntry[]
+  // leaderboardEntries LeaderboardEntry[]
 
   gameSessions GameSession[]
 }
 
-
 model GameSession {
-  id        String   @id @default(uuid()) @db.Uuid
-  startedAt DateTime @default(now())
+  id        String    @id @default(uuid()) @db.Uuid
+  startedAt DateTime  @default(now())
   endedAt   DateTime?
 
-  gameId    String @db.Uuid
-  game      Game   @relation(fields: [gameId], references: [id], onDelete: Cascade)
+  gameId String @db.Uuid
+  game   Game   @relation(fields: [gameId], references: [id], onDelete: Cascade)
+
+  leaderboardEntry LeaderboardEntry?
+
+  gameSessionCharacters GameSessionCharacter[]
 }
 
-
-
-
 model Character {
-  id        String   @id @default(uuid()) @db.Uuid
-  name      String
+  id          String @id @default(uuid()) @db.Uuid
+  name        String
   xCoordinate Float
   yCoordinate Float
-  width     Float
-  height    Float
+  width       Float
+  height      Float
 
-  gameId    String @db.Uuid
-  game      Game   @relation(fields: [gameId], references: [id], onDelete: Cascade)
+  gameId String @db.Uuid
+  game   Game   @relation(fields: [gameId], references: [id], onDelete: Cascade)
+
+  gameSessionCharacters GameSessionCharacter[]
 
   @@unique([gameId, name])
 }
 
+model GameSessionCharacter {
+  id      String    @id @default(uuid()) @db.Uuid
+  isFound Boolean   @default(false)
+  foundAt DateTime?
+
+  gameSessionId String      @db.Uuid
+  gameSession   GameSession @relation(fields: [gameSessionId], references: [id], onDelete: Cascade)
+
+  characterId String    @db.Uuid
+  character   Character @relation(fields: [characterId], references: [id], onDelete: Cascade)
+
+  @@unique([gameSessionId, characterId])
+}
 
 model LeaderboardEntry {
-  id        String   @id @default(uuid()) @db.Uuid
-  username  String
+  id                 String @id @default(uuid()) @db.Uuid
+  username           String
   timeInMilliseconds Int
 
-  position Int
-
-  gameId    String @db.Uuid
-  game      Game   @relation(fields: [gameId], references: [id], onDelete: Cascade)
+  gameSessionId String @db.Uuid @unique
+  gameSession   GameSession   @relation(fields: [gameSessionId], references: [id], onDelete: Cascade)
 }

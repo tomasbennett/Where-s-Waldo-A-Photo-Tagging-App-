@@ -161,11 +161,21 @@ export function PlayLayout() {
 
         setIsOpenCharacterClickDisplay({
             isOpen: true,
-            xCoordinate: e.clientX,
-            yCoordinate: e.clientY
+            xCoordinate: clickXPixels,
+            yCoordinate: clickYPixels
         });
 
     }
+
+
+
+    useEffect(() => {
+        //START GAME SESSION HERE
+
+        return () => {
+            //END GAME SESSION IF THERE EXISTS ONE
+        };
+    }, []);
 
 
 
