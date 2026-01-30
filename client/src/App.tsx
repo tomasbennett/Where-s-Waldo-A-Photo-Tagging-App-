@@ -5,6 +5,7 @@ import { ErrorElement } from './features/error/services/ErrorElement'
 import { ErrorPageLayout } from './features/error/layouts/ErrorLayout'
 import { PlayLayout } from './features/play/layouts/PlayLayout'
 import { allPlayContextHandles } from './features/play/constants'
+import { HomePageLayout } from './layouts/HomePageLayout'
 
 
 
@@ -24,7 +25,7 @@ const router = createBrowserRouter([
       },
       {
         path: "home",
-        element: <p>HOME PAGE</p>
+        element: <HomePageLayout />
       },
       {
         path: "play",

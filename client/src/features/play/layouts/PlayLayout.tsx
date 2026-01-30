@@ -7,6 +7,15 @@ import { Timer } from "../components/Timer";
 import { CharacterHeaderDisplay } from "../components/CharacterHeaderDisplay";
 import { CharacterClickDisplay } from "../components/CharacterClickDisplay";
 import { IClickCharacterDisplay } from "../models/IClickCharacterDisplay";
+import { IStartGameResponse, StartGameResponseSchema } from "../../../../../shared/features/play/models/IStartGameResponse";
+import { LoadingCircle } from "../../../components/LoadingCircle";
+import { domain } from "../../../constants/EnvironmentAPI";
+import { APIErrorSchema, ICustomErrorResponse } from "../../../../../shared/features/api/models/APIErrorResponse";
+import { notExpectedFormatError } from "../../../constants/constants";
+import { IRequestGuess } from "../../../../../shared/features/play/models/IRequestGuess";
+import { ResponseGuessSchema } from "../../../../../shared/features/play/models/IResponseGuess";
+import { error } from "console";
+
 
 
 export function PlayLayout() {
@@ -168,16 +177,279 @@ export function PlayLayout() {
     }
 
 
+    const [gameSession, setGameSession] = useState<string | null>(null);
+    const [isGameSessionLoading, setIsGameSessionLoading] = useState<boolean>(true);
+
+    const navigate = useNavigate();
+    const location = useLocation();
 
     useEffect(() => {
         //START GAME SESSION HERE
 
+        async function getGameSession() {
+            try {
+                setIsGameSessionLoading(true);
+                setGameSession(null);
+
+                const response = await fetch(`${domain}/api/start/${playHandle!.gameName}`, {
+                    method: "POST"
+                });
+
+                const jsonData = await response.json();
+
+                const gameSessionResult = StartGameResponseSchema.safeParse(jsonData);
+                if (gameSessionResult.success) {
+                    console.log(gameSessionResult.data.gameSessionId);
+                    setGameSession(gameSessionResult.data.gameSessionId);
+                    return;
+                }
+
+                const errorResult = APIErrorSchema.safeParse(jsonData);
+                if (errorResult.success) {
+                    navigate("/home", {
+                        state: {
+                            error: errorResult.data
+                        }
+                    });
+
+                    return;
+                }
+
+
+
+                navigate("/home", {
+                    state: {
+                        error: notExpectedFormatError
+                    }
+                });
+
+
+                return;
+
+
+
+
+
+
+
+            } catch (error) {
+                if (error instanceof Error) {
+                    const errorMessage: ICustomErrorResponse = {
+                        ok: false,
+                        status: 0,
+                        message: error.message
+                    }
+
+                    navigate("/home", {
+                        state: {
+                            error: errorMessage
+                        }
+                    });
+
+                    return;
+                }
+
+                navigate("/home", {
+                    state: {
+                        error: {
+                            ok: false,
+                            status: 0,
+                            message: "Unexpected error occurred!!!"
+                        }
+                    }
+                });
+
+                return;
+
+
+            } finally {
+                setIsGameSessionLoading(false);
+
+            }
+
+        }
+
+        getGameSession();
+
+
+
         return () => {
             //END GAME SESSION IF THERE EXISTS ONE
-        };
-    }, []);
 
-    const location = useLocation()
+            async function deleteGameSession() {
+                try {
+                    if (!gameSession) {
+                        return;
+                    }
+
+                    setIsGameSessionLoading(true);
+
+                    const deleteGameSessionResponse = await fetch(`${domain}/api/game/${gameSession}`, {
+                        method: "DELETE"
+                    });
+
+                    if (deleteGameSessionResponse.status === 204) {
+                        setGameSession(null);
+                        return;
+                    }
+
+                    const jsonData = await deleteGameSessionResponse.json();
+
+                    const errorResult = APIErrorSchema.safeParse(jsonData);
+                    if (errorResult.success) {
+                        console.error(errorResult.data);
+                    }
+
+                    console.error(
+                        notExpectedFormatError
+                    );
+
+
+
+                } catch (error) {
+                    if (error instanceof Error) {
+                        const errorMessage: ICustomErrorResponse = {
+                            ok: false,
+                            status: 0,
+                            message: error.message
+                        }
+
+                        console.error(errorMessage);
+
+                        return;
+                    }
+
+                    console.error({
+                        ok: false,
+                        status: 0,
+                        message: "Unexpected error occurred!!!"
+                    });
+
+                    return;
+
+                } finally {
+                    setIsGameSessionLoading(false);
+
+                }
+
+            }
+
+            deleteGameSession();
+
+
+        };
+    }, [location.pathname]);
+
+    const characterGuess = async (character: ICharacter, xCoordinate: number, yCoordinate: number) => {
+        try {
+            if (!gameSession) {
+                return;
+            }
+
+            setIsGuessLoading(true);
+            setIsOpenCharacterClickDisplay({ isOpen: false });
+
+            const guess: IRequestGuess = {
+                gameSessionId: gameSession,
+                gameName: playHandle.gameName,
+                characterName: character.name,
+                xCoordinate,
+                yCoordinate
+
+            }
+
+            const guessCharacterResponse = await fetch(`${domain}/api/guess`, {
+                method: "POST",
+                body: JSON.stringify(guess)
+            });
+
+            const jsonData = await guessCharacterResponse.json();
+
+            const guessResponseResult = ResponseGuessSchema.safeParse(jsonData);
+            if (guessResponseResult.success) {
+                const guessRes = guessResponseResult.data;
+
+                if (guessRes.isGameCompleted) {
+                    //RESET CHARACTERS
+                    //NAVIGATE TO LEADERBOARD PAGE
+                    //WILL TURNING THE GAME SESSION TO NULL WORK HERE???
+                    //NOTE: WHEN THE GAME IS OVER NAVIGATING OFF THE PAGE WILL DELETE THE GAME SESSION NOT WHAT WE WANT
+                    //NEVERMIND WE CAN TURN IT TO NULL HERE AND OPEN THE DIALOG
+                    //WE HAVE TO KEEP GAME SESSION ID UNTIL SUBMITTING FORM
+                    //PROBABLY NEED A NEW WAY OF DELETING GAME SESSION IF THE GAME IS COMPLETED AND LEFT KEEP GAMESESSION
+
+                }
+
+                if (guessRes.isCorrect) {
+                    //REMOVE CHARACTER FROM AVAILABLE CHARACTERS
+
+
+                }
+
+                if (!guessRes.isCorrect) {
+
+                }
+
+            }
+
+            const errorResult = APIErrorSchema.safeParse(jsonData);
+            if (errorResult.success) {
+                navigate("/home", {
+                    state: {
+                        error: errorResult.data
+                    }
+                });
+
+                return;
+            }
+
+
+            navigate("/home", {
+                state: {
+                    error: notExpectedFormatError
+                }
+            });
+
+            return;
+
+
+            
+        } catch (error) {
+            if (error instanceof Error) {
+                const errorMessage: ICustomErrorResponse = {
+                    ok: false,
+                    status: 0,
+                    message: error.message
+                }
+
+                navigate("/home", {
+                    state: {
+                        error: errorMessage
+                    }
+                });
+
+                return;
+            }
+
+            navigate("/home", {
+                state: {
+                    error: {
+                        ok: false,
+                        status: 0,
+                        message: "Unexpected error occurred!!!"
+                    }
+                }
+            });
+
+            return;
+
+            
+        } finally {
+            setIsGuessLoading(false);
+
+        }
+    }
+
 
     return (
 
@@ -187,48 +459,65 @@ export function PlayLayout() {
 
             <div data-img-ratio={mainImgRatio} ref={mainOverflowContainerRef} className={styles.playLayoutContainer}>
 
-                <div data-img-ratio={mainImgRatio} ref={headerContainerRef} className={styles.headerSpace}>
+                {
+                    isGameSessionLoading ?
+                        <div className={styles.loadingContainer}>
 
-                    <div className={styles.headerMoving}>
+                            <LoadingCircle height="6rem" />
 
-                        <Timer key={location.pathname} />
+                        </div>
 
+                        :
 
-                        <CharacterHeaderDisplay characters={charactersAvailable} />
-
-
-                    </div>
-
-                </div>
-
-                <div data-img-ratio={mainImgRatio} className={styles.mainImageContainer}>
+                        <>
+                        
+                            <div data-img-ratio={mainImgRatio} ref={headerContainerRef} className={styles.headerSpace}>
 
 
-                    <img onClick={onClickImg} data-img-ratio={mainImgRatio} onLoad={() => {
-                        calculateLayout();
-                        // addResizeObserver();
-                    }} ref={mainImgRef} src={playHandle.imgUrl} alt={`Main Image: ${playHandle.backendRoute}`} />
+                                        <div className={styles.headerMoving}>
+
+                                            <Timer key={location.pathname} />
 
 
-
-                    {
-                        isOpenCharacterClickDisplay.isOpen && 
-                            <CharacterClickDisplay 
-                                clickX={isOpenCharacterClickDisplay.xCoordinate}
-                                clickY={isOpenCharacterClickDisplay.yCoordinate}
-                                characters={charactersAvailable} 
-                                setIsGuessLoading={setIsGuessLoading}
-                                setAvailableCharacters={setCharactersAvailable}
-                                setIsOpenAvailableCharactersMenu={setIsOpenCharacterClickDisplay}
-                                />
-
-                    }
+                                            <CharacterHeaderDisplay characters={charactersAvailable} />
 
 
-                </div>
+                                        </div>
 
 
 
+
+                            </div>
+
+                            <div data-img-ratio={mainImgRatio} className={styles.mainImageContainer}>
+
+
+                                <img onClick={onClickImg} data-img-ratio={mainImgRatio} onLoad={() => {
+                                    calculateLayout();
+                                    // addResizeObserver();
+                                }} ref={mainImgRef} src={playHandle.imgUrl} alt={`Main Image: ${playHandle.backendRoute}`} />
+
+
+
+                                {
+                                    isOpenCharacterClickDisplay.isOpen &&
+                                    <CharacterClickDisplay
+                                        clickX={isOpenCharacterClickDisplay.xCoordinate}
+                                        clickY={isOpenCharacterClickDisplay.yCoordinate}
+                                        characters={charactersAvailable}
+                                        setIsGuessLoading={setIsGuessLoading}
+                                        setAvailableCharacters={setCharactersAvailable}
+                                        setIsOpenAvailableCharactersMenu={setIsOpenCharacterClickDisplay}
+                                    />
+
+                                }
+
+
+                            </div>
+                        
+                        </>
+
+                }
 
             </div>
 

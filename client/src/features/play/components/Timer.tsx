@@ -38,7 +38,7 @@ export function Timer() {
     useEffect(() => {
         reset()
         start();
-        // console.log("LOCATION: " + location.pathname);
+        console.log("LOCATION: " + location.pathname);
         return () => stop();
     }, [location.pathname]);
 
