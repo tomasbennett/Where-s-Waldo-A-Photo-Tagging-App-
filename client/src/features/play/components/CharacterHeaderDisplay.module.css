@@ -64,3 +64,9 @@
     color: white;
     font-weight: bold;
 }
+
+
+
+.alreadySelectedCharacter{
+    opacity: 0.6;
+}

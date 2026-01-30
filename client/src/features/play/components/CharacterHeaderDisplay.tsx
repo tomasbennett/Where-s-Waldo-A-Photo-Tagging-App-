@@ -10,6 +10,10 @@ type ICharacterHeaderDisplayProps = {
 export function CharacterHeaderDisplay({
     characters
 }: ICharacterHeaderDisplayProps) {
+
+
+
+
     return (
         <div className={styles.characterHeader}>
 
@@ -17,7 +21,7 @@ export function CharacterHeaderDisplay({
 
                 <React.Fragment key={character.name + indx}>
 
-                    <div className={styles.characterContainer}>
+                    <div className={`${styles.characterContainer} ${character.isFound && styles.alreadySelectedCharacter}`}>
 
                         <div className={styles.imgContainer}>
                             <img src={character.imgUrl} alt={`Character Image: ${character.name}`} />
