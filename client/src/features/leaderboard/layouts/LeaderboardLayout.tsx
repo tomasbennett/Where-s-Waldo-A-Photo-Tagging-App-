@@ -45,7 +45,48 @@ export function LeaderBoardLayout() {
 
 
     const [isLoading, setIsLoading] = useState<boolean>(true);
-    const [leaderBoardArr, setLeaderBoardArr] = useState<ILeaderBoardEntriesArray>([]);
+    const [leaderBoardArr, setLeaderBoardArr] = useState<ILeaderBoardEntriesArray>([
+        {
+            username: "Hello",
+            timeInMilliseconds: 11300
+        },
+        {
+            username: "Hello",
+            timeInMilliseconds: 11300
+        },
+        {
+            username: "Hello",
+            timeInMilliseconds: 11300
+        },
+        {
+            username: "Hello",
+            timeInMilliseconds: 11300
+        },
+        {
+            username: "Hello",
+            timeInMilliseconds: 11300
+        },
+        {
+            username: "Hello",
+            timeInMilliseconds: 11300
+        },
+        {
+            username: "Hello",
+            timeInMilliseconds: 11300
+        },
+        {
+            username: "Hello",
+            timeInMilliseconds: 11300
+        },
+        {
+            username: "Hello",
+            timeInMilliseconds: 11300
+        },
+        {
+            username: "Hello1111111111111111111111111111111111111111111111",
+            timeInMilliseconds: 11300
+        },
+    ]);
 
 
 
@@ -102,7 +143,9 @@ export function LeaderBoardLayout() {
                                     <div className={styles.leaderBoardEntry}>
                                         
                                         <p className={styles.entryPos}>
-                                            {pos}
+                                            {
+                                                `${pos}.`
+                                            }
                                         </p>
                                         <p className={styles.entryTime}>
                                             {TimeFormatter(hours, minutes, seconds)}

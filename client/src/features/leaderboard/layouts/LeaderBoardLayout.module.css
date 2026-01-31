@@ -54,8 +54,6 @@
     display: flex;
     flex-direction: column;
 
-
-    overflow: hidden;
 }
 
 .leaderBoardHeader{
@@ -99,7 +97,7 @@
 
     width: 100%;
 
-    background-color: rgb(1, 25, 70);
+    background-color: var(--dark-blue-colour);
 
     padding: var(--leaderboard-container-padding);
 
@@ -107,6 +105,14 @@
     align-items: center;
     justify-content: flex-start;
     column-gap: var(--leaderboard-container-column-gap);
+
+    overflow: hidden;
+}
+
+.entryUsername{
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
 }
 
 
@@ -129,3 +135,19 @@
 
     border-left: 0rem solid white;
 }
+
+/* .entryPos{
+    
+}
+
+.leaderBoardEntry:nth-of-type(2) .entryPos{
+    background-color: gold;
+}
+
+.leaderBoardEntry:nth-of-type(3) .entryPos{
+    background-color: silver;
+}
+
+.leaderBoardEntry:nth-of-type(4) .entryPos{
+    background-color: rgb(160, 30, 30);
+} */
