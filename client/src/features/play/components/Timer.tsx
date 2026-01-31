@@ -2,6 +2,7 @@ import { useLocation } from "react-router-dom";
 import styles from "./Timer.module.css";
 
 import { useEffect, useState, useRef } from "react";
+import { TimeFormatter } from "../../../services/TimeFormatter";
 
 
 
@@ -47,16 +48,11 @@ export function Timer() {
     const minutes = Math.floor((secondsElapsed % 3600) / 60);
     const seconds = secondsElapsed % 60;
 
-    const formattedTime = `${hours.toString().padStart(2, "0")}:${minutes
-        .toString()
-        .padStart(2, "0")}:${seconds.toString().padStart(2, "0")}`;
-
-
 
 
     return (
         <div className={styles.timerContainer}>
-            <span className={styles.timer}>{formattedTime}</span>
+            <span className={styles.timer}>{TimeFormatter(hours, minutes, seconds)}</span>
         </div>
     );
 }

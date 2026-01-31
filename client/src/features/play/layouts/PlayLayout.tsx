@@ -298,6 +298,7 @@ export function PlayLayout() {
                     const errorResult = APIErrorSchema.safeParse(jsonData);
                     if (errorResult.success) {
                         console.error(errorResult.data);
+                        return;
                     }
 
                     console.error(
@@ -360,7 +361,10 @@ export function PlayLayout() {
 
             const guessCharacterResponse = await fetch(`${domain}/api/guess`, {
                 method: "POST",
-                body: JSON.stringify(guess)
+                body: JSON.stringify(guess),
+                headers: {
+                    "Content-Type": "application/json"
+                },
             });
 
             const jsonData = await guessCharacterResponse.json();
@@ -377,18 +381,25 @@ export function PlayLayout() {
                     //NEVERMIND WE CAN TURN IT TO NULL HERE AND OPEN THE DIALOG
                     //WE HAVE TO KEEP GAME SESSION ID UNTIL SUBMITTING FORM
                     //PROBABLY NEED A NEW WAY OF DELETING GAME SESSION IF THE GAME IS COMPLETED AND LEFT KEEP GAMESESSION
+                    console.log("Game is completed");
+                    return;
 
                 }
 
                 if (guessRes.isCorrect) {
                     //REMOVE CHARACTER FROM AVAILABLE CHARACTERS
-
+                    console.log("CHARACTER SELECTED IS CORRECT");
+                    return;
 
                 }
 
                 if (!guessRes.isCorrect) {
+                    console.log("CHARACTER SELECTED IS NOT CORRECT");
+                    return;
 
                 }
+
+                return;
 
             }
 
@@ -413,7 +424,7 @@ export function PlayLayout() {
             return;
 
 
-            
+
         } catch (error) {
             if (error instanceof Error) {
                 const errorMessage: ICustomErrorResponse = {
@@ -443,7 +454,7 @@ export function PlayLayout() {
 
             return;
 
-            
+
         } finally {
             setIsGuessLoading(false);
 
@@ -470,19 +481,19 @@ export function PlayLayout() {
                         :
 
                         <>
-                        
+
                             <div data-img-ratio={mainImgRatio} ref={headerContainerRef} className={styles.headerSpace}>
 
 
-                                        <div className={styles.headerMoving}>
+                                <div className={styles.headerMoving}>
 
-                                            <Timer key={location.pathname} />
-
-
-                                            <CharacterHeaderDisplay characters={charactersAvailable} />
+                                    <Timer key={location.pathname} />
 
 
-                                        </div>
+                                    <CharacterHeaderDisplay characters={charactersAvailable} />
+
+
+                                </div>
 
 
 
@@ -501,20 +512,22 @@ export function PlayLayout() {
 
                                 {
                                     isOpenCharacterClickDisplay.isOpen &&
-                                    <CharacterClickDisplay
-                                        clickX={isOpenCharacterClickDisplay.xCoordinate}
-                                        clickY={isOpenCharacterClickDisplay.yCoordinate}
-                                        characters={charactersAvailable}
-                                        setIsGuessLoading={setIsGuessLoading}
-                                        setAvailableCharacters={setCharactersAvailable}
-                                        setIsOpenAvailableCharactersMenu={setIsOpenCharacterClickDisplay}
-                                    />
+                                        <CharacterClickDisplay
+                                            clickX={isOpenCharacterClickDisplay.xCoordinate}
+                                            clickY={isOpenCharacterClickDisplay.yCoordinate}
+                                            characters={charactersAvailable}
+                                            // setIsGuessLoading={setIsGuessLoading}
+                                            // setAvailableCharacters={setCharactersAvailable}
+                                            // setIsOpenAvailableCharactersMenu={setIsOpenCharacterClickDisplay}
+                                            // isOpenAvailableCharactersMenu={isOpenCharacterClickDisplay}
+                                            characterGuess={characterGuess}
+                                        />
 
                                 }
 
 
                             </div>
-                        
+
                         </>
 
                 }

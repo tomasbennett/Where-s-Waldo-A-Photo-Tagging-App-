@@ -6,6 +6,7 @@ import { ErrorPageLayout } from './features/error/layouts/ErrorLayout'
 import { PlayLayout } from './features/play/layouts/PlayLayout'
 import { allPlayContextHandles } from './features/play/constants'
 import { HomePageLayout } from './layouts/HomePageLayout'
+import { LeaderBoardLayout } from './features/leaderboard/layouts/LeaderboardLayout'
 
 
 
@@ -30,6 +31,20 @@ const router = createBrowserRouter([
       {
         path: "play",
         element: <PlayLayout />,
+        children: [
+          {
+            index: true,
+            element: <Navigate to="/home" replace />
+          },
+          ...allPlayContextHandles.map((handle, index) => ({
+            handle: handle,
+            path: handle.backendRoute
+          }))
+        ]
+      },
+      {
+        path: "leaderboard",
+        element: <LeaderBoardLayout />,
         children: [
           {
             index: true,

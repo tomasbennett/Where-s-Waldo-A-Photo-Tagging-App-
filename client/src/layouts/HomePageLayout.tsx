@@ -1,7 +1,10 @@
 import { useMemo, useEffect } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate, useLocation, Link } from "react-router-dom";
 import styles from "./HomePageLayout.module.css";
 import { APIErrorSchema, ICustomErrorResponse } from "../../../shared/features/api/models/APIErrorResponse";
+import { allPlayContextHandles } from "../features/play/constants";
+import React from "react";
+import githubImg from "../assets/github-profile-img.jpg"
 
 
 export function HomePageLayout() {
@@ -28,8 +31,57 @@ export function HomePageLayout() {
 
     return (
         <>
+            <div className={styles.outerContainer}>
 
-            <p>HOME PAGE</p>
+                <header className={styles.header}>
+                    <div className={styles.titleContainer}>
+
+                        <div className={styles.headerImgContainer}>
+                            <img src={githubImg} alt="Github profile image" />
+                        </div>
+
+                        <h1 className={styles.titleText}>
+                            Where's Waldo Project
+                        </h1>
+
+                    </div>
+                </header>
+
+                <div className={styles.gamesContainer}>
+
+                    {
+                        allPlayContextHandles.map((game, indx) => {
+
+                            return (
+                                <React.Fragment key={game.gameName + indx}>
+                                    
+                                    <Link to={`/play/${game.gameName}`} className={styles.singleGameContainer}>
+
+
+                                        <div className={styles.imgContainer}>
+                                            <img src={game.imgUrl} alt={`Game main image: ${game.gameName}`} />
+                                        </div>
+
+                                        <div className={styles.lowerContainer}>
+                                            <p className={styles.gameName}>
+                                                {game.gameName}
+                                            </p>
+                                        </div>
+
+
+
+                                    </Link>
+
+                                </React.Fragment>
+                            )
+                        })
+                    }
+
+
+                </div>
+
+
+            </div>
 
 
 

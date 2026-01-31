@@ -7,32 +7,30 @@ type ICharacterClickDisplayProps = {
     characters: ICharacter[],
     clickX: number,
     clickY: number,
-    setIsGuessLoading: React.Dispatch<React.SetStateAction<boolean>>,
-    setAvailableCharacters: React.Dispatch<React.SetStateAction<ICharacter[]>>
-    setIsOpenAvailableCharactersMenu: React.Dispatch<React.SetStateAction<IClickCharacterDisplay>>
+    // setIsGuessLoading: React.Dispatch<React.SetStateAction<boolean>>,
+    // setAvailableCharacters: React.Dispatch<React.SetStateAction<ICharacter[]>>
+    // setIsOpenAvailableCharactersMenu: React.Dispatch<React.SetStateAction<IClickCharacterDisplay>>
+    // isOpenAvailableCharactersMenu: IClickCharacterDisplay,
+    characterGuess: (character: ICharacter, xCoordinate: number, yCoordinate: number) => Promise<void>
 }
 
 export function CharacterClickDisplay({
     characters,
     clickX,
     clickY,
-    setIsGuessLoading,
-    setAvailableCharacters,
-    setIsOpenAvailableCharactersMenu
-}: ICharacterClickDisplayProps) {
-    const onClick = async (character: ICharacter) => {
-        console.log(`Character ${character.name} clicked at coordinates (${clickX}, ${clickY})`);
-        setIsGuessLoading(true);
-        setIsOpenAvailableCharactersMenu({ isOpen: false });
+    // isOpenAvailableCharactersMenu,
+    characterGuess
 
-    }
+}: ICharacterClickDisplayProps) {
+    // const display = isOpenAvailableCharactersMenu.isOpen ? "flex" : "none"
 
 
     return (
         <div className={styles.characterClickDisplay} style={
             {
                 top: clickY,
-                left: clickX
+                left: clickX,
+                // display: display
             }
         }>
             {characters.map((character, indx) => (
@@ -40,7 +38,7 @@ export function CharacterClickDisplay({
                 <React.Fragment key={character.name + indx}>
 
                     <div onClick={async () => {
-                        await onClick(character);
+                        await characterGuess(character, clickX, clickY);
                     }} className={styles.characterContainer}>
 
                         <div className={styles.imgContainer}>
