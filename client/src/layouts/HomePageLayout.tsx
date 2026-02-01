@@ -47,38 +47,50 @@ export function HomePageLayout() {
                     </div>
                 </header>
 
-                <div className={styles.gamesContainer}>
+                <main className={styles.mainFooterContainer}>
 
-                    {
-                        allPlayContextHandles.map((game, indx) => {
+                    <div className={styles.gamesContainer}>
 
-                            return (
-                                <React.Fragment key={game.gameName + indx}>
-                                    
-                                    <Link to={`/play/${game.gameName}`} className={styles.singleGameContainer}>
+                        {
+                            allPlayContextHandles.map((game, indx) => {
 
-
-                                        <div className={styles.imgContainer}>
-                                            <img src={game.imgUrl} alt={`Game main image: ${game.gameName}`} />
-                                        </div>
-
-                                        <div className={styles.lowerContainer}>
-                                            <p className={styles.gameName}>
-                                                {game.gameName}
-                                            </p>
-                                        </div>
+                                return (
+                                    <React.Fragment key={game.gameName + indx}>
+                                        
+                                        <Link to={`/play/${game.gameName}`} className={styles.singleGameContainer}>
 
 
+                                            <div className={styles.imgContainer}>
+                                                <img src={game.imgUrl} alt={`Game main image: ${game.gameName}`} />
+                                            </div>
 
-                                    </Link>
+                                            <div className={styles.lowerContainer}>
+                                                <p className={styles.gameName}>
+                                                    {game.gameName}
+                                                </p>
+                                            </div>
 
-                                </React.Fragment>
-                            )
-                        })
-                    }
 
 
-                </div>
+                                        </Link>
+
+                                    </React.Fragment>
+                                )
+                            })
+                        }
+
+
+                    </div>
+
+                    <footer className={styles.footerContainer}>
+
+                        
+
+
+                    </footer>
+                    
+                </main>
+
 
 
             </div>

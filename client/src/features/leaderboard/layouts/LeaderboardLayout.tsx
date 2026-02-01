@@ -6,6 +6,8 @@ import styles from "./LeaderBoardLayout.module.css";
 import { ILeaderBoardEntriesArray } from "../../../../../shared/features/leaderBoard/models/IGetLeaderBoardResponse";
 import React from "react";
 import { TimeFormatter } from "../../../services/TimeFormatter";
+import { HomeIcon } from "../../../assets/icons/HomeIcon";
+import { Link } from "react-router-dom";
 
 
 
@@ -164,6 +166,10 @@ export function LeaderBoardLayout() {
 
 
                 </div>
+
+                <Link to={`/home`} className={styles.homeBtnContainer}>
+                    <HomeIcon />
+                </Link>
 
 
 

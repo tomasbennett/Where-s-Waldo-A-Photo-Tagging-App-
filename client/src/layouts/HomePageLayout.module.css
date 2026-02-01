@@ -4,6 +4,7 @@
 
     display: flex;
     flex-direction: column;
+    /* row-gap: 3rem; */
 
     overflow: hidden;
 
@@ -93,7 +94,7 @@
 
     padding: 2rem;
 
-    overflow: auto;
+    /* overflow: auto; */
 
 
 }
@@ -171,4 +172,26 @@
 
 .singleGameContainer:hover .lowerContainer{
     padding-bottom: 6rem;
+}
+
+.mainFooterContainer{
+    flex: 1 1 0;
+    width: 100%;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+
+    overflow: auto;
+
+}
+
+.footerContainer{
+    flex-shrink: 0;
+    width: 100%;
+
+    min-height: 20rem;
+
+    border-top: .1rem solid white;
+    background-color: rgb(0, 0, 0);
 }
