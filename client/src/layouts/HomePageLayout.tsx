@@ -6,6 +6,8 @@ import { allPlayContextHandles } from "../features/play/constants";
 import React from "react";
 import githubImg from "../assets/github-profile-img.jpg"
 import { FinishedForm } from "../features/play/components/FinishedForm";
+import { GithubIcon } from "../assets/icons/GithubIcon";
+import { LinkedInIcon } from "../assets/icons/LinkedInIcon";
 
 
 export function HomePageLayout() {
@@ -85,7 +87,18 @@ export function HomePageLayout() {
 
                     <footer className={styles.footerContainer}>
 
-                        
+                        <div className={styles.socialIconsContainer}>
+
+                            <a className={styles.socialLinks} href="https://github.com/tomasbennett" target="_blank" rel="noopener noreferrer">
+                                <GithubIcon />
+                            </a>
+
+                            <a className={styles.socialLinks} href="https://www.linkedin.com/in/tomasbennett/" target="_blank" rel="noopener noreferrer">
+                                <LinkedInIcon />
+                            </a>
+
+
+                        </div>
 
 
                     </footer>
@@ -95,13 +108,6 @@ export function HomePageLayout() {
 
 
             </div>
-
-            <FinishedForm 
-                dialogRef={useRef<HTMLDialogElement | null>(null)}
-                timeInMs={5555555}
-                gameName={"fantasy"}
-                gameSessionId=""
-            />
 
 
 
