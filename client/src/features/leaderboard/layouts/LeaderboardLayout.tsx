@@ -8,6 +8,7 @@ import React from "react";
 import { TimeFormatter } from "../../../services/TimeFormatter";
 import { HomeIcon } from "../../../assets/icons/HomeIcon";
 import { Link } from "react-router-dom";
+import { HoursMinutesSecondsFromMs } from "../../../services/HoursMinutesSecondsFromMs";
 
 
 
@@ -135,10 +136,7 @@ export function LeaderBoardLayout() {
 
                             const ms = entry.timeInMilliseconds;
 
-                            const hours = Math.floor(ms / (1000 * 60 * 60));
-                            const minutes = Math.floor((ms % (1000 * 60 * 60)) / (1000 * 60));
-                            const seconds = Math.floor((ms % (1000 * 60)) / 1000);
-
+                            const { hours, minutes, seconds } = HoursMinutesSecondsFromMs(ms);
 
                             return (
                                 <React.Fragment key={entry.username + indx}>

@@ -1,10 +1,11 @@
-import { useMemo, useEffect } from "react";
+import { useMemo, useEffect, useRef } from "react";
 import { useNavigate, useLocation, Link } from "react-router-dom";
 import styles from "./HomePageLayout.module.css";
 import { APIErrorSchema, ICustomErrorResponse } from "../../../shared/features/api/models/APIErrorResponse";
 import { allPlayContextHandles } from "../features/play/constants";
 import React from "react";
 import githubImg from "../assets/github-profile-img.jpg"
+import { FinishedForm } from "../features/play/components/FinishedForm";
 
 
 export function HomePageLayout() {
@@ -88,12 +89,19 @@ export function HomePageLayout() {
 
 
                     </footer>
-                    
+
                 </main>
 
 
 
             </div>
+
+            <FinishedForm 
+                dialogRef={useRef<HTMLDialogElement | null>(null)}
+                timeInMs={5555555}
+                gameName={"fantasy"}
+                gameSessionId=""
+            />
 
 
 
