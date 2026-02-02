@@ -16,6 +16,8 @@ import { IRequestGuess } from "../../../../../shared/features/play/models/IReque
 import { ResponseGuessSchema } from "../../../../../shared/features/play/models/IResponseGuess";
 import { error } from "console";
 import { useMediaQuery } from "react-responsive";
+import { useMainImgRatio } from "../hooks/useMainImgRatio";
+import { useGuessLoading } from "../../../context/useGuessLoading";
 
 
 
@@ -64,80 +66,21 @@ export function PlayLayout() {
 
 
 
-
-
-
-
-
-
     const mainImgRef = useRef<HTMLImageElement | null>(null);
-    // const headerContainerRef = useRef<HTMLDivElement | null>(null);
     const mainOverflowContainerRef = useRef<HTMLDivElement | null>(null);
 
+    const {
+        setGuessLoading: setIsGuessLoading
+    } = useGuessLoading()
 
-    const [mainImgRatio, setMainImgRatio] = useState<"wide" | "tall" | null>(null);
-
-
-    const calculateLayout = () => {
-        if (!mainImgRef.current || !mainOverflowContainerRef.current) {
-            console.log("One or more refs are null, cannot calculate layout!!!");
-            return;
-        }
-
-        const fullContainerWidth = mainOverflowContainerRef.current.offsetWidth;
-        const fullContainerHeight = mainOverflowContainerRef.current.offsetHeight;
-        const fullContainerAspectRatio = fullContainerWidth / fullContainerHeight;
-
-
-        const imgNaturalWidth = mainImgRef.current.naturalWidth;
-        const imgNaturalHeight = mainImgRef.current.naturalHeight;
-        const imgAspectRatio = imgNaturalWidth / imgNaturalHeight;
-
-        console.log(`The full container width should be: ${fullContainerWidth}`);
-        console.log(`The full container height should be: ${fullContainerHeight}`);
-
-        console.log(`Is the container aspect ratio greater than img aspect ratio should be no space if true::: ${fullContainerAspectRatio > imgAspectRatio}`);
-
-
-        //WE HAVE TO FIGURE THIS OUT
-
-
-        if (imgAspectRatio > fullContainerAspectRatio) {
-            // WIDE IMAGE
-            setMainImgRatio("wide");
-
-        } else {
-            // TALL IMAGE
-            setMainImgRatio("tall");
-
-
-        }
-
-
-
-    };
-
-
-
-    const observer = useRef<ResizeObserver | null>(null);
-
-
-    const addResizeObserver = () => {
-        observer.current = new ResizeObserver(calculateLayout);
-        if (mainOverflowContainerRef.current) {
-            observer.current.observe(mainOverflowContainerRef.current);
-        }
-
-    }
-
-    useEffect(() => {
-
-        return () => {
-            if (observer.current) {
-                observer.current.disconnect()
-            }
-        };
-    }, []);
+    const {
+        mainImgRatio,
+        calculateLayout,
+        addResizeObserver,
+    } = useMainImgRatio({
+        mainImgRef,
+        mainOverflowContainerRef
+    });
 
 
 
@@ -152,7 +95,8 @@ export function PlayLayout() {
 
 
 
-    const [isGuessLoading, setIsGuessLoading] = useState<boolean>(false);
+
+
     const [charactersAvailable, setCharactersAvailable] = useState<ICharacter[]>(
         () => playHandle.characters.map(char => ({ ...char }))
     );
@@ -185,10 +129,22 @@ export function PlayLayout() {
         console.log(`Click coordinates: (X: ${clickXPixels}, Y: ${clickYPixels})`);
 
 
+
+        const x =
+            e.clientX - rect.left + mainImg.scrollLeft;
+
+        const y =
+            e.clientY - rect.top + mainImg.scrollTop;
+
+
+
+
         setIsOpenCharacterClickDisplay({
             isOpen: true,
             xCoordinate: clickXPixels,
-            yCoordinate: clickYPixels
+            yCoordinate: clickYPixels,
+            visualXCoord: x,
+            visualYCoord: y
         });
 
     }
@@ -364,13 +320,15 @@ export function PlayLayout() {
                 return;
             }
 
+            const guessedCharacter = character;
+
             setIsGuessLoading(true);
             setIsOpenCharacterClickDisplay({ isOpen: false });
 
             const guess: IRequestGuess = {
                 gameSessionId: gameSession,
                 gameName: playHandle.gameName,
-                characterName: character.name,
+                characterName: guessedCharacter.name,
                 xCoordinate,
                 yCoordinate
 
@@ -389,6 +347,24 @@ export function PlayLayout() {
             const guessResponseResult = ResponseGuessSchema.safeParse(jsonData);
             if (guessResponseResult.success) {
                 const guessRes = guessResponseResult.data;
+                
+                if (guessRes.isCorrect) {
+                    //REMOVE CHARACTER FROM AVAILABLE CHARACTERS
+                    console.log("CHARACTER SELECTED IS CORRECT");
+                    setCharactersAvailable(prev => {
+                        return prev.map((char) => {
+                            
+
+                            return {
+                                ...char,
+                                isFound: char.name === guessedCharacter.name
+                            }
+                        })
+                    });
+
+                    //MARK CORRECTLY ON THE PAGE
+
+                }
 
                 if (guessRes.isGameCompleted) {
                     //RESET CHARACTERS
@@ -403,12 +379,6 @@ export function PlayLayout() {
 
                 }
 
-                if (guessRes.isCorrect) {
-                    //REMOVE CHARACTER FROM AVAILABLE CHARACTERS
-                    console.log("CHARACTER SELECTED IS CORRECT");
-                    return;
-
-                }
 
                 if (!guessRes.isCorrect) {
                     console.log("CHARACTER SELECTED IS NOT CORRECT");
@@ -507,8 +477,8 @@ export function PlayLayout() {
                                 <div className={styles.headerMoving}>
                                     {
                                         !isMediumScreen &&
-                                            <div className={styles.headerLeftContainer}>
-                                            </div>
+                                        <div className={styles.headerLeftContainer}>
+                                        </div>
 
                                     }
 
@@ -539,16 +509,15 @@ export function PlayLayout() {
 
                                 {
                                     isOpenCharacterClickDisplay.isOpen &&
-                                        <CharacterClickDisplay
-                                            clickX={isOpenCharacterClickDisplay.xCoordinate}
-                                            clickY={isOpenCharacterClickDisplay.yCoordinate}
-                                            characters={charactersAvailable}
-                                            // setIsGuessLoading={setIsGuessLoading}
-                                            // setAvailableCharacters={setCharactersAvailable}
-                                            // setIsOpenAvailableCharactersMenu={setIsOpenCharacterClickDisplay}
-                                            // isOpenAvailableCharactersMenu={isOpenCharacterClickDisplay}
-                                            characterGuess={characterGuess}
-                                        />
+                                    <CharacterClickDisplay
+                                        clickX={isOpenCharacterClickDisplay.xCoordinate}
+                                        clickY={isOpenCharacterClickDisplay.yCoordinate}
+                                        visualX={isOpenCharacterClickDisplay.visualXCoord}
+                                        visualY={isOpenCharacterClickDisplay.visualYCoord}
+                                        characters={charactersAvailable}
+
+                                        characterGuess={characterGuess}
+                                    />
 
                                 }
 

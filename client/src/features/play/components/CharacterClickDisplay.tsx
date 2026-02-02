@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { RefObject, useRef } from 'react';
 import styles from './CharacterClickDisplay.module.css';
 import { ICharacter } from '../models/IPlayContextHandle';
 import { IClickCharacterDisplay } from '../models/IClickCharacterDisplay';
@@ -7,50 +7,60 @@ type ICharacterClickDisplayProps = {
     characters: ICharacter[],
     clickX: number,
     clickY: number,
-    // setIsGuessLoading: React.Dispatch<React.SetStateAction<boolean>>,
-    // setAvailableCharacters: React.Dispatch<React.SetStateAction<ICharacter[]>>
-    // setIsOpenAvailableCharactersMenu: React.Dispatch<React.SetStateAction<IClickCharacterDisplay>>
-    // isOpenAvailableCharactersMenu: IClickCharacterDisplay,
+    visualX: number,
+    visualY: number
     characterGuess: (character: ICharacter, xCoordinate: number, yCoordinate: number) => Promise<void>
+
 }
 
 export function CharacterClickDisplay({
     characters,
     clickX,
     clickY,
-    // isOpenAvailableCharactersMenu,
-    characterGuess
+    visualX,
+    visualY,
+
+    characterGuess,
+
 
 }: ICharacterClickDisplayProps) {
-    // const display = isOpenAvailableCharactersMenu.isOpen ? "flex" : "none"
+
+
 
 
     return (
         <div className={styles.characterClickDisplay} style={
             {
-                top: clickY,
-                left: clickX,
+                top: visualY,
+                left: visualX,
                 // display: display
             }
         }>
-            {characters.map((character, indx) => (
+            {characters.map((character, indx) => {
 
-                <React.Fragment key={character.name + indx}>
+                if (character.isFound) {
+                    return null;
+                }
 
-                    <div onClick={async () => {
-                        await characterGuess(character, clickX, clickY);
-                    }} className={styles.characterContainer}>
+                return (
+                    <React.Fragment key={character.name + indx}>
 
-                        <div className={styles.imgContainer}>
-                            <img src={character.imgUrl} alt={`Character Image: ${character.name}`} />
+                        <div onClick={async () => {
+                            await characterGuess(character, clickX, clickY);
+                        }} className={styles.characterContainer}>
+
+                            <div className={styles.imgContainer}>
+                                <img src={character.imgUrl} alt={`Character Image: ${character.name}`} />
+                            </div>
+                            <p>{character.name}</p>
+
                         </div>
-                        <p>{character.name}</p>
 
-                    </div>
+                    </React.Fragment>
 
-                </React.Fragment>
+                )
 
-            ))}
+            })}
         </div>
     );
 }

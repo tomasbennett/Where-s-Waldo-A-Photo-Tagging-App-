@@ -7,6 +7,7 @@ import { PlayLayout } from './features/play/layouts/PlayLayout'
 import { allPlayContextHandles } from './features/play/constants'
 import { HomePageLayout } from './layouts/HomePageLayout'
 import { LeaderBoardLayout } from './features/leaderboard/layouts/LeaderboardLayout'
+import { GuessLoadingProvider } from './context/useGuessLoading'
 
 
 
@@ -69,8 +70,11 @@ function App() {
 
   return (
     <>
+      <GuessLoadingProvider>
 
-      <RouterProvider router={router} />
+        <RouterProvider router={router} />
+        
+      </GuessLoadingProvider>
 
     </>
   )

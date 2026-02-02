@@ -1,17 +1,24 @@
-.backgroundContainer{
-    position: relative;
+.backgroundContainer {
+  position: relative;
 
-    flex: 1 1 0;
+  flex: 1 1 0;
 
-    height: 100%;
+  height: 100%;
 
-    background-color: var(--dark-background-colour);
-    color: rgb(247, 247, 247);
+  background-color: var(--dark-background-colour);
+  color: rgb(247, 247, 247);
 
-    overflow: hidden;
+  overflow: hidden;
 
-    background-size: 600% 600%;
-    animation: gradientMove 12s ease infinite;
+  background-size: 600% 600%;
+  animation: gradientMove 12s ease infinite;
+
+  cursor: default;
+}
+
+
+.loadingContainer {
+  cursor: wait;
 }
 
 /* 
