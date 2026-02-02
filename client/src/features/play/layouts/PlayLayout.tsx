@@ -18,6 +18,12 @@ import { error } from "console";
 import { useMediaQuery } from "react-responsive";
 import { useMainImgRatio } from "../hooks/useMainImgRatio";
 import { useGuessLoading } from "../../../context/useGuessLoading";
+import { ICurrGuesses } from "../models/ICurrGuesses";
+import { CheckMark } from "../../../assets/icons/CheckMark";
+import { XIcon } from "../../../assets/icons/XIcon";
+import { Guess } from "../components/Guess";
+import { FinishedForm } from "../components/FinishedForm";
+import { IAllGameID } from "../../../../../shared/features/play/models/ISharedDefaultGameDetails";
 
 
 
@@ -314,7 +320,15 @@ export function PlayLayout() {
         };
     }, [location.pathname]);
 
-    const characterGuess = async (character: ICharacter, xCoordinate: number, yCoordinate: number) => {
+
+
+    const [currGuesses, setCurrGuesses] = useState<ICurrGuesses[]>([]);
+    const [timeInMs, setTimeInMs] = useState<number | null>(null);
+
+    const intervalRef = useRef<number | null>(null);
+
+
+    const characterGuess = async (character: ICharacter, xCoordinate: number, yCoordinate: number, visualX: number, visualY: number) => {
         try {
             if (!gameSession) {
                 return;
@@ -347,23 +361,27 @@ export function PlayLayout() {
             const guessResponseResult = ResponseGuessSchema.safeParse(jsonData);
             if (guessResponseResult.success) {
                 const guessRes = guessResponseResult.data;
-                
+
                 if (guessRes.isCorrect) {
                     //REMOVE CHARACTER FROM AVAILABLE CHARACTERS
                     console.log("CHARACTER SELECTED IS CORRECT");
                     setCharactersAvailable(prev => {
                         return prev.map((char) => {
-                            
+
 
                             return {
                                 ...char,
-                                isFound: char.name === guessedCharacter.name
+                                isFound: char.name === guessedCharacter.name ? true : char.isFound
                             }
                         })
                     });
 
                     //MARK CORRECTLY ON THE PAGE
-
+                    setCurrGuesses(prev => [...prev, {
+                        guess: "correct",
+                        xCoord: visualX,
+                        yCoord: visualY
+                    }]);
                 }
 
                 if (guessRes.isGameCompleted) {
@@ -375,6 +393,12 @@ export function PlayLayout() {
                     //WE HAVE TO KEEP GAME SESSION ID UNTIL SUBMITTING FORM
                     //PROBABLY NEED A NEW WAY OF DELETING GAME SESSION IF THE GAME IS COMPLETED AND LEFT KEEP GAMESESSION
                     console.log("Game is completed");
+                    setTimeInMs(guessRes.timeToCompleteGameMs);
+                    if (intervalRef.current !== null) {
+                        clearInterval(intervalRef.current);
+                        intervalRef.current = null;
+                    }
+
                     return;
 
                 }
@@ -382,6 +406,11 @@ export function PlayLayout() {
 
                 if (!guessRes.isCorrect) {
                     console.log("CHARACTER SELECTED IS NOT CORRECT");
+                    setCurrGuesses(prev => [...prev, {
+                        guess: "incorrect",
+                        xCoord: visualX,
+                        yCoord: visualY
+                    }]);
                     return;
 
                 }
@@ -450,6 +479,7 @@ export function PlayLayout() {
 
     const isMediumScreen = useMediaQuery({ maxWidth: mediumScreenMaxWidth });
 
+    const [secondsElapsed, setSecondsElapsed] = useState<number>(0);
 
     return (
 
@@ -484,7 +514,7 @@ export function PlayLayout() {
 
 
 
-                                    <Timer key={location.pathname} />
+                                    <Timer setSecondsElapsed={setSecondsElapsed} secondsElapsed={secondsElapsed} intervalRef={intervalRef} key={location.pathname} />
 
 
                                     <CharacterHeaderDisplay characters={charactersAvailable} />
@@ -517,18 +547,30 @@ export function PlayLayout() {
                                         characters={charactersAvailable}
 
                                         characterGuess={characterGuess}
+
+
                                     />
 
                                 }
 
+                                <Guess currGuesses={currGuesses} />
 
                             </div>
+
+
 
                         </>
 
                 }
 
             </div>
+
+            <FinishedForm
+                setSecondsElapsed={setSecondsElapsed}
+                gameName={playHandle.gameName as IAllGameID}
+                gameSessionId={gameSession ?? ""}
+                timeInMs={timeInMs}
+            />
 
         </>
     )

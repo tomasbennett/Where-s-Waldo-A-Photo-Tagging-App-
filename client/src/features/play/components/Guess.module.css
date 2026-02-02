@@ -1,0 +1,32 @@
+.guessContainer{
+    position: absolute;
+
+    overflow: hidden;
+
+    width: 4rem;
+    aspect-ratio: 1;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+
+    & svg{
+        width: 100%;
+        height: 100%;
+
+        object-fit: cover;
+
+        fill: red;
+    }
+}
+
+
+.correctGuessContainer{
+
+
+
+    & svg{
+        fill: rgb(0, 179, 0);
+    }
+}

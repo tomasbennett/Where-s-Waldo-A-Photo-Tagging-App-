@@ -1,4 +1,4 @@
-import { RefObject, useEffect, useRef, useState } from "react";
+import { RefObject, useEffect, useMemo, useRef, useState } from "react";
 import styles from "./FinishedForm.module.css";
 import { HoursMinutesSecondsFromMs } from "../../../services/HoursMinutesSecondsFromMs";
 import { TimeFormatter } from "../../../services/TimeFormatter";
@@ -13,24 +13,25 @@ import { APISuccessSchema } from "../../../../../shared/features/api/models/APIS
 import { notExpectedFormatError } from "../../../constants/constants";
 import { IAllGameID } from "../../../../../shared/features/play/models/ISharedDefaultGameDetails";
 import { Link } from "react-router-dom";
+import { LoadingCircle } from "../../../components/LoadingCircle";
 
 type IFinishedFormProps = {
-    dialogRef: RefObject<HTMLDialogElement | null>,
-    timeInMs: number,
+    timeInMs: number | null,
     gameSessionId: string,
-    gameName: IAllGameID
+    gameName: IAllGameID,
+    setSecondsElapsed: React.Dispatch<React.SetStateAction<number>>
 }
 
 export function FinishedForm({
-    dialogRef,
     timeInMs,
     gameSessionId,
-    gameName
+    gameName,
+    setSecondsElapsed
 }: IFinishedFormProps) {
+    const dialogRef = useRef<HTMLDialogElement | null>(null);
 
 
-
-    const { hours, minutes, seconds } = HoursMinutesSecondsFromMs(timeInMs);
+    const { hours, minutes, seconds } = HoursMinutesSecondsFromMs(timeInMs ?? 0);
 
     const {
         register,
@@ -74,6 +75,7 @@ export function FinishedForm({
                 navigate(`/leaderboard/${gameName}`, {
                     replace: true
                 });
+                setSecondsElapsed(0);
 
                 return;
             }
@@ -139,24 +141,32 @@ export function FinishedForm({
 
     }
 
+    const isVisible = useMemo(() => !!timeInMs || timeInMs === 0, [timeInMs]);
+
+    const handleCancel = (event: KeyboardEvent) => {
+        if (event.key === 'Escape') {
+            event.preventDefault();
+        }
+
+    };
+
     useEffect(() => {
-        dialogRef.current?.showModal();
+        if (isVisible) {
+            dialogRef.current?.showModal();
 
-        const handleCancel = (event: KeyboardEvent) => {
-            if (event.key === 'Escape') {
-                event.preventDefault();
-            }
 
-        };
+            dialogRef.current?.addEventListener("keydown", handleCancel);
 
-        dialogRef.current?.addEventListener("keydown", handleCancel);
+        }
 
         return () => {
+            if (isVisible) {
+                dialogRef.current?.removeEventListener("keydown", handleCancel);
 
-            dialogRef.current?.removeEventListener("keydown", handleCancel);
+            }
         };
 
-    }, []);
+    }, [timeInMs]);
 
 
     return (
@@ -194,7 +204,13 @@ export function FinishedForm({
                         </div>
 
                         <div className={styles.btnContainer}>
-                            <button className={styles.submitBtn} type="submit">Submit</button>
+                            <button className={styles.submitBtn} type="submit">{
+                                isLoading ?
+                                    <LoadingCircle height="90%" />
+                                :
+                                    "Submit"
+
+                            }</button>
                             <Link to={`/home`} className={styles.returnHomeBtn}>Return Home</Link>
                         </div>
 

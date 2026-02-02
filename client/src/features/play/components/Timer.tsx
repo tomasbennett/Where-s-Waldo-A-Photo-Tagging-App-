@@ -1,17 +1,24 @@
 import { useLocation } from "react-router-dom";
 import styles from "./Timer.module.css";
 
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, RefObject } from "react";
 import { TimeFormatter } from "../../../services/TimeFormatter";
 
 
 
+type ITimerProps = {
+    intervalRef: RefObject<number | null>,
+    secondsElapsed: number,
+    setSecondsElapsed: React.Dispatch<React.SetStateAction<number>>
+}
 
+export function Timer({
+    intervalRef,
+    secondsElapsed,
+    setSecondsElapsed
+}: ITimerProps) {
 
-export function Timer() {
-
-    const [secondsElapsed, setSecondsElapsed] = useState<number>(0);
-    const intervalRef = useRef<number | null>(null); // <- number, not NodeJS.Timer
+    
 
     const start = () => {
         if (intervalRef.current !== null) return; // already running

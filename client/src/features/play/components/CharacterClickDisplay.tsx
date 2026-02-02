@@ -9,7 +9,7 @@ type ICharacterClickDisplayProps = {
     clickY: number,
     visualX: number,
     visualY: number
-    characterGuess: (character: ICharacter, xCoordinate: number, yCoordinate: number) => Promise<void>
+    characterGuess: (character: ICharacter, xCoordinate: number, yCoordinate: number, visualX: number, visualY: number) => Promise<void>
 
 }
 
@@ -46,7 +46,7 @@ export function CharacterClickDisplay({
                     <React.Fragment key={character.name + indx}>
 
                         <div onClick={async () => {
-                            await characterGuess(character, clickX, clickY);
+                            await characterGuess(character, clickX, clickY, visualX, visualY);
                         }} className={styles.characterContainer}>
 
                             <div className={styles.imgContainer}>
