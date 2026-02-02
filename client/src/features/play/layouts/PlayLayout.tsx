@@ -21,9 +21,6 @@ import { useMediaQuery } from "react-responsive";
 
 export function PlayLayout() {
 
-    const mainImgRef = useRef<HTMLImageElement | null>(null);
-    const headerContainerRef = useRef<HTMLDivElement | null>(null);
-    const mainOverflowContainerRef = useRef<HTMLDivElement | null>(null);
 
     const matches = useMatches();
 
@@ -67,39 +64,45 @@ export function PlayLayout() {
 
 
 
+
+
+
+
+
+
+    const mainImgRef = useRef<HTMLImageElement | null>(null);
+    // const headerContainerRef = useRef<HTMLDivElement | null>(null);
+    const mainOverflowContainerRef = useRef<HTMLDivElement | null>(null);
+
+
     const [mainImgRatio, setMainImgRatio] = useState<"wide" | "tall" | null>(null);
 
 
     const calculateLayout = () => {
-        if (!mainImgRef.current || !headerContainerRef.current || !mainOverflowContainerRef.current) {
+        if (!mainImgRef.current || !mainOverflowContainerRef.current) {
             console.log("One or more refs are null, cannot calculate layout!!!");
             return;
         }
 
-        const headerContainerRect =
-            headerContainerRef.current.getBoundingClientRect();
-
-        const mainOverflowContainerRect =
-            mainOverflowContainerRef.current.getBoundingClientRect();
-
-        const availableHeight = mainOverflowContainerRect.height - headerContainerRect.height;
-        const availableWidth = mainOverflowContainerRect.width - 40;
-
-        const availableAspectRatio =
-            availableWidth / availableHeight;
+        const fullContainerWidth = mainOverflowContainerRef.current.offsetWidth;
+        const fullContainerHeight = mainOverflowContainerRef.current.offsetHeight;
+        const fullContainerAspectRatio = fullContainerWidth / fullContainerHeight;
 
 
         const imgNaturalWidth = mainImgRef.current.naturalWidth;
         const imgNaturalHeight = mainImgRef.current.naturalHeight;
         const imgAspectRatio = imgNaturalWidth / imgNaturalHeight;
 
-        console.log(`Container available height: ${availableAspectRatio}`);
-        console.log(`Img Aspect Ratio: ${imgAspectRatio}`);
+        console.log(`The full container width should be: ${fullContainerWidth}`);
+        console.log(`The full container height should be: ${fullContainerHeight}`);
+
+        console.log(`Is the container aspect ratio greater than img aspect ratio should be no space if true::: ${fullContainerAspectRatio > imgAspectRatio}`);
+
 
         //WE HAVE TO FIGURE THIS OUT
 
 
-        if (imgAspectRatio > 1) {
+        if (imgAspectRatio > fullContainerAspectRatio) {
             // WIDE IMAGE
             setMainImgRatio("wide");
 
@@ -116,25 +119,38 @@ export function PlayLayout() {
 
 
 
-    // const observer = useRef<ResizeObserver | null>(null);
+    const observer = useRef<ResizeObserver | null>(null);
 
 
-    // const addResizeObserver = () => {
-    //     observer.current = new ResizeObserver(calculateLayout);
-    //     if (mainOverflowContainerRef.current) {
-    //         observer.current.observe(mainOverflowContainerRef.current);
-    //     }
+    const addResizeObserver = () => {
+        observer.current = new ResizeObserver(calculateLayout);
+        if (mainOverflowContainerRef.current) {
+            observer.current.observe(mainOverflowContainerRef.current);
+        }
 
-    // }
+    }
 
-    // useEffect(() => {
+    useEffect(() => {
 
-    //     return () => {
-    //         if (observer.current) {
-    //             observer.current.disconnect()
-    //         }
-    //     };
-    // }, []);
+        return () => {
+            if (observer.current) {
+                observer.current.disconnect()
+            }
+        };
+    }, []);
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     const [isGuessLoading, setIsGuessLoading] = useState<boolean>(false);
     const [charactersAvailable, setCharactersAvailable] = useState<ICharacter[]>(
@@ -485,7 +501,7 @@ export function PlayLayout() {
 
                         <>
 
-                            <div data-img-ratio={mainImgRatio} ref={headerContainerRef} className={`${styles.headerSpace} ${styles.mediumWidthHeaderSpace}`}>
+                            <div data-img-ratio={mainImgRatio} className={`${styles.headerSpace} ${styles.mediumWidthHeaderSpace}`}>
 
 
                                 <div className={styles.headerMoving}>
@@ -511,12 +527,12 @@ export function PlayLayout() {
 
                             </div>
 
-                            <div data-img-ratio={mainImgRatio} className={styles.mainImageContainer}>
+                            <div ref={mainOverflowContainerRef} data-img-ratio={mainImgRatio} className={styles.mainImageContainer}>
 
 
                                 <img onClick={onClickImg} data-img-ratio={mainImgRatio} onLoad={() => {
                                     calculateLayout();
-                                    // addResizeObserver();
+                                    addResizeObserver();
                                 }} ref={mainImgRef} src={playHandle.imgUrl} alt={`Main Image: ${playHandle.backendRoute}`} />
 
 
