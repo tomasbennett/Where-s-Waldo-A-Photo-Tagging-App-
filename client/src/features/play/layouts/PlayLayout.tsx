@@ -11,10 +11,11 @@ import { IStartGameResponse, StartGameResponseSchema } from "../../../../../shar
 import { LoadingCircle } from "../../../components/LoadingCircle";
 import { domain } from "../../../constants/EnvironmentAPI";
 import { APIErrorSchema, ICustomErrorResponse } from "../../../../../shared/features/api/models/APIErrorResponse";
-import { notExpectedFormatError } from "../../../constants/constants";
+import { mediumScreenMaxWidth, notExpectedFormatError, thinScreenMaxWidth } from "../../../constants/constants";
 import { IRequestGuess } from "../../../../../shared/features/play/models/IRequestGuess";
 import { ResponseGuessSchema } from "../../../../../shared/features/play/models/IResponseGuess";
 import { error } from "console";
+import { useMediaQuery } from "react-responsive";
 
 
 
@@ -461,6 +462,8 @@ export function PlayLayout() {
         }
     }
 
+    const isMediumScreen = useMediaQuery({ maxWidth: mediumScreenMaxWidth });
+
 
     return (
 
@@ -482,10 +485,18 @@ export function PlayLayout() {
 
                         <>
 
-                            <div data-img-ratio={mainImgRatio} ref={headerContainerRef} className={styles.headerSpace}>
+                            <div data-img-ratio={mainImgRatio} ref={headerContainerRef} className={`${styles.headerSpace} ${styles.mediumWidthHeaderSpace}`}>
 
 
                                 <div className={styles.headerMoving}>
+                                    {
+                                        !isMediumScreen &&
+                                            <div className={styles.headerLeftContainer}>
+                                            </div>
+
+                                    }
+
+
 
                                     <Timer key={location.pathname} />
 

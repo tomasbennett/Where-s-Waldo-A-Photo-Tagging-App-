@@ -1,21 +1,29 @@
 .timerContainer {
-    grid-area: timer;
+    flex-grow: 0;
+    flex-shrink: 0;
+    flex-basis: auto;
 
-    width: 100%;
+    width: 15rem;
     height: 100%;
+
+    box-shadow: 0 0 1rem black;
 
     display: flex;
     align-items: center;
     justify-content: center;
 
     
-
+    overflow: hidden;
 
 }
 
 .timer{
     font-size: 2rem;
     font-weight: bold;
+
+    text-align: center;
+    width: 100%;
+
 
     padding: 1rem 3rem;
 

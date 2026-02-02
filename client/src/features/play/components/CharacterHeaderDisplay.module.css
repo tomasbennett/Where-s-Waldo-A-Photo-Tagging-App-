@@ -1,7 +1,17 @@
+.outerContainer{
+    height: 100%;
+
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+}
+
 .characterHeader{
     
 
-    grid-area: characters;
+    box-shadow: 0 0 1rem black;
+
+    max-width: max-content;
 
     display: flex;
     align-items: center;

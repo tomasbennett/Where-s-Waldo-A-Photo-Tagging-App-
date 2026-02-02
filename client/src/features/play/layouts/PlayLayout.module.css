@@ -42,17 +42,35 @@
 
 
 .headerMoving{
-    display: grid;
-    grid-template-areas: ". timer characters";
-    grid-template-columns: 1fr 1fr 1fr;
+    flex: 1 1 0;
+
+    display: flex;
+    align-items: center;
+
 
     /* height: var(--header-space-height); */
     /* place-content: center; */
 
     gap: 1.5rem;
 
-    padding: .6rem;
+    padding: .6rem 2rem;
 }
+
+.headerMoving > *{
+    flex: 1 1 0;
+
+    height: 100%;
+
+    overflow: hidden;
+    /* width: 100%; */
+}
+
+
+
+
+
+
+
 
 
 
