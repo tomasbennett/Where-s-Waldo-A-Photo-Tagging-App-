@@ -16,6 +16,10 @@
     /* padding-top: ; */
 }
 
+.outerContainer[data-loading="true"]{
+    justify-content: center;
+}
+
 
 .imgContainer{
     flex-shrink: 0;
@@ -180,4 +184,47 @@
     transform: scale(1.1);
 
     border: .1rem solid white;
+}
+
+
+
+.loadMoreContainer{
+    flex-shrink: 0;
+
+    padding: 1rem 3rem;
+
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    overflow: hidden;
+
+    background-color: black;
+
+    box-shadow: 0 0 1rem black;
+    color: white;
+
+    transition: background-color .2s linear, color .2s linear;
+
+    cursor: pointer;
+
+    & button{
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        cursor: pointer;
+
+        background-color: transparent;
+    }
+
+}
+
+
+.loadMoreContainer:hover{
+    background-color: white;
+    color: black;
+
+
 }

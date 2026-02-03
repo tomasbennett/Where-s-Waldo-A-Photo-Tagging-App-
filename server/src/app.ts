@@ -7,7 +7,7 @@ import dotenv from "dotenv";
 
 
 import { router as apiRouter } from "./controllers/api";
-
+import { router as leaderBoardRouter } from "./controllers/leaderBoard";
 
 import { environment } from "../../shared/constants";
 
@@ -52,7 +52,7 @@ app.use(cookieParser());
 
 
 
-app.use("/api", apiRouter);
+app.use("/api", apiRouter, leaderBoardRouter);
 
 
 app.get(/.*/, (req: Request, res: Response, next: NextFunction) => {

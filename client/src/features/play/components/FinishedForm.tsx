@@ -72,10 +72,11 @@ export function FinishedForm({
 
             const leaderBoardEntryResult = APISuccessSchema.safeParse(jsonData);
             if (leaderBoardEntryResult.success) {
+                setSecondsElapsed(0);
+                dialogRef.current?.close();
                 navigate(`/leaderboard/${gameName}`, {
                     replace: true
                 });
-                setSecondsElapsed(0);
 
                 return;
             }

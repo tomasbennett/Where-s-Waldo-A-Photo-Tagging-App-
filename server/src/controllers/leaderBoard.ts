@@ -28,7 +28,9 @@ router.get("/leaderboard", async (req: Request<{}, {}, {}, IGetLeaderBoardQueryP
         const leaderBoardEntries = await prisma.leaderboardEntry.findMany({
             where: {
                 gameSession: {
-                    gameId: gameId
+                    game: {
+                        name: gameId
+                    }
                 }
             },
             take: limit,
