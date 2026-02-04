@@ -1,9 +1,9 @@
+import { IClickDisplayBothDirections } from "./IClickDisplayBoxDirections";
+
 export type IClickCharacterDisplay = {
-    isOpen: true;
+    isOpen: boolean;
     xCoordinate: number;
     yCoordinate: number;
     visualXCoord: number;
     visualYCoord: number;
-} | {
-    isOpen: false;
-}
+} & IClickDisplayBothDirections

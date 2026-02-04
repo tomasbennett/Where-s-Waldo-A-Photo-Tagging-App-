@@ -25,6 +25,7 @@ import { Guess } from "../components/Guess";
 import { FinishedForm } from "../components/FinishedForm";
 import { IAllGameID } from "../../../../../shared/features/play/models/ISharedDefaultGameDetails";
 import { IImgNaturalSize } from "../models/IImgNaturalSize";
+import { IClickDisplayBothDirections, IClickDisplayBoxDirections } from "../models/IClickDisplayBoxDirections";
 
 
 
@@ -115,21 +116,32 @@ export function PlayLayout() {
         () => playHandle.characters.map(char => ({ ...char }))
     );
 
-    const [isOpenCharacterClickDisplay, setIsOpenCharacterClickDisplay] = useState<IClickCharacterDisplay>({ isOpen: false });
+    const [isOpenCharacterClickDisplay, setIsOpenCharacterClickDisplay] = useState<IClickCharacterDisplay>({
+        isOpen: false,
+        xCoordinate: 0,
+        yCoordinate: 0,
+        xDirection: "0%",
+        yDirection: "0%",
+        visualXCoord: 0,
+        visualYCoord: 0
+    });
 
 
+    const clickDisplayCharacterBoxRef = useRef<HTMLDivElement | null>(null);
 
     const onClickImg = (e: React.MouseEvent<HTMLImageElement>) => {
         console.log("Main image clicked!!!");
 
         const mainImg = mainImgRef.current;
-        if (!mainImg) {
-            console.log("Main image ref is null, cannot get click coordinates!!!");
+        const clickDisplay = clickDisplayCharacterBoxRef.current;
+        if (!mainImg || !clickDisplay) {
+            console.log("Main image ref or click display element is null, cannot get click coordinates or place click display box!!!");
             return;
         }
 
 
         const rect = mainImg.getBoundingClientRect();
+
 
         const clickX = e.clientX - rect.left;
         const clickY = e.clientY - rect.top;
@@ -150,18 +162,50 @@ export function PlayLayout() {
         const y =
             clickY / rect.height;
 
-
-
+        const clickDisplayRect = clickDisplay.getBoundingClientRect();
+        const xAxisClickDisplay: IClickDisplayBoxDirections = (e.clientX + clickDisplayRect.width) > rect.right ? "-100%" : "0%";
+        const yAxisClickDisplay: IClickDisplayBoxDirections = (e.clientY + clickDisplayRect.height) > rect.bottom ? "-100%" : "0%";
+        const clickDisplayDirections: IClickDisplayBothDirections = {
+            xDirection: xAxisClickDisplay,
+            yDirection: yAxisClickDisplay
+        }
 
         setIsOpenCharacterClickDisplay({
             isOpen: true,
             xCoordinate: clickXPixels,
             yCoordinate: clickYPixels,
             visualXCoord: x,
-            visualYCoord: y
+            visualYCoord: y,
+            ...clickDisplayDirections
         });
 
     }
+
+    useEffect(() => {
+        function handleClickOutside(e: MouseEvent) {
+            if (!mainImgRef.current) return;
+
+            if (!mainImgRef.current.contains(e.target as Node)) {
+                setIsOpenCharacterClickDisplay({
+                    isOpen: false,
+                    xCoordinate: 0,
+                    yCoordinate: 0,
+                    xDirection: "0%",
+                    yDirection: "0%",
+                    visualXCoord: 0,
+                    visualYCoord: 0
+                });
+                
+            }
+        }
+
+        document.addEventListener("mousedown", handleClickOutside);
+
+        return () => {
+            document.removeEventListener("mousedown", handleClickOutside);
+        };
+    }, []);
+
 
 
     const [gameSession, setGameSession] = useState<string | null>(null);
@@ -345,7 +389,15 @@ export function PlayLayout() {
             const guessedCharacter = character;
 
             setIsGuessLoading(true);
-            setIsOpenCharacterClickDisplay({ isOpen: false });
+            setIsOpenCharacterClickDisplay({
+                isOpen: false,
+                xCoordinate: 0,
+                yCoordinate: 0,
+                xDirection: "0%",
+                yDirection: "0%",
+                visualXCoord: 0,
+                visualYCoord: 0
+            });
 
             const guess: IRequestGuess = {
                 gameSessionId: gameSession,
@@ -565,16 +617,19 @@ export function PlayLayout() {
 
 
                                     {
-                                        isOpenCharacterClickDisplay.isOpen &&
                                         <CharacterClickDisplay
                                             clickX={isOpenCharacterClickDisplay.xCoordinate}
                                             clickY={isOpenCharacterClickDisplay.yCoordinate}
                                             visualX={isOpenCharacterClickDisplay.visualXCoord}
                                             visualY={isOpenCharacterClickDisplay.visualYCoord}
                                             characters={charactersAvailable}
+                                            isOpen={isOpenCharacterClickDisplay.isOpen}
+                                            clickDisplayBox={clickDisplayCharacterBoxRef}
 
                                             characterGuess={characterGuess}
 
+                                            xTransformDirection={isOpenCharacterClickDisplay.xDirection}
+                                            yTransformDirection={isOpenCharacterClickDisplay.yDirection}
 
                                         />
 

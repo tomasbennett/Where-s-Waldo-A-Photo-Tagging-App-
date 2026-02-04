@@ -20,8 +20,22 @@
 
     overflow: hidden;
 
+    pointer-events: auto;
 
 }
+
+
+.characterClickDisplay[data-open="false"]{
+    pointer-events: none;
+
+    user-select: none;
+
+    visibility: hidden;
+
+    
+}
+
+
 
 
 .characterContainer {
