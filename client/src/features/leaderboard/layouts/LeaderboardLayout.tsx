@@ -68,9 +68,14 @@ export function LeaderBoardLayout() {
         };
 
         const parsedQuery = {
-            limit: Number(searchParams.get("limit")),
-            offset: Number(searchParams.get("offset"))
+            limit: searchParams.get("limit")
+                ? Number(searchParams.get("limit"))
+                : undefined,
+            offset: searchParams.get("offset")
+                ? Number(searchParams.get("offset"))
+                : undefined
         };
+
 
         const result = GetLeaderBoardQueryParamsSchema
             .partial()
@@ -111,10 +116,13 @@ export function LeaderBoardLayout() {
 
                 const leaderBoardEntriesResult = GetLeaderBoardEntriesResponseSchema.safeParse(jsonData);
                 if (leaderBoardEntriesResult.success) {
+                    console.log("THIS Leader board clg defines success!!!");
                     setLoadMoreState(leaderBoardEntriesResult.data.leaderBoardEntries.length < fullParams.limit ? "No More Available" : "Load More");
                     setLeaderBoardArr(leaderBoardEntriesResult.data.leaderBoardEntries);
                     return;
                 }
+
+                console.log("A NON successful response");
 
 
                 const customErrorResult = APIErrorSchema.safeParse(jsonData);
@@ -143,7 +151,10 @@ export function LeaderBoardLayout() {
 
                 if (error instanceof Error) {
 
-                    if (error.name === "AbortError") return;
+                    if (error.name === "AbortError") {
+                        console.error("ABORTERROR has run for some reason!!!");
+                        return;
+                    };
 
                     const errorMessage: ICustomErrorResponse = {
                         ok: false,
@@ -350,14 +361,14 @@ export function LeaderBoardLayout() {
                                     }
                                     onLoadTenMore();
                                 }} type="button">{
-                                    loadMoreState === "loading" ?
-                                        <LoadingCircle height="90%" />
+                                        loadMoreState === "loading" ?
+                                            <LoadingCircle height="90%" />
 
-                                        :
+                                            :
 
-                                        loadMoreState
+                                            loadMoreState
 
-                                }</button>
+                                    }</button>
                             </div>
 
                             <Link to={`/home`} className={styles.homeBtnContainer}>

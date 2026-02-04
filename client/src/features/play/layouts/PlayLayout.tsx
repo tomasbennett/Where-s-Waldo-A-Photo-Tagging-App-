@@ -24,6 +24,7 @@ import { XIcon } from "../../../assets/icons/XIcon";
 import { Guess } from "../components/Guess";
 import { FinishedForm } from "../components/FinishedForm";
 import { IAllGameID } from "../../../../../shared/features/play/models/ISharedDefaultGameDetails";
+import { IImgNaturalSize } from "../models/IImgNaturalSize";
 
 
 
@@ -77,7 +78,12 @@ export function PlayLayout() {
 
     const {
         setGuessLoading: setIsGuessLoading
-    } = useGuessLoading()
+    } = useGuessLoading();
+
+
+    const imgScaleContainerRef = useRef<HTMLDivElement | null>(null);
+
+    const imgNaturalSizeRef = useRef<IImgNaturalSize | null>(null);
 
     const {
         mainImgRatio,
@@ -85,7 +91,9 @@ export function PlayLayout() {
         addResizeObserver,
     } = useMainImgRatio({
         mainImgRef,
-        mainOverflowContainerRef
+        mainOverflowContainerRef,
+        imgScaleContainerRef,
+        imgNaturalSizeRef
     });
 
 
@@ -137,10 +145,10 @@ export function PlayLayout() {
 
 
         const x =
-            e.clientX - rect.left + mainImg.scrollLeft;
+            clickX / rect.width;
 
         const y =
-            e.clientY - rect.top + mainImg.scrollTop;
+            clickY / rect.height;
 
 
 
@@ -529,31 +537,52 @@ export function PlayLayout() {
 
                             <div ref={mainOverflowContainerRef} data-img-ratio={mainImgRatio} className={styles.mainImageContainer}>
 
+                                <div data-img-ratio={mainImgRatio} ref={imgScaleContainerRef} className={styles.imgScaleContainer}>
 
-                                <img onClick={onClickImg} data-img-ratio={mainImgRatio} onLoad={() => {
-                                    calculateLayout();
-                                    addResizeObserver();
-                                }} ref={mainImgRef} src={playHandle.imgUrl} alt={`Main Image: ${playHandle.backendRoute}`} />
+                                    <img onClick={onClickImg} onLoad={() => {
+                                        const img = mainImgRef.current;
+                                        const imgScaleContainer = imgScaleContainerRef.current;
+                                        if (!img || !imgScaleContainer) {
+                                            console.error("IMG or imgContainer failed to load to get natural aspect ratio!!!");
+                                            return;
+                                        }
+
+                                        const imgNaturalAspectRatio = img.naturalWidth / img.naturalHeight;
+
+                                        imgNaturalSizeRef.current = {
+                                            naturalWidth: img.naturalWidth,
+                                            naturalHeight: img.naturalHeight,
+                                            naturalAspectRatio: imgNaturalAspectRatio
+                                        }
+
+                                        imgScaleContainer.style.aspectRatio = imgNaturalSizeRef.current.naturalAspectRatio.toString();
+
+
+                                        calculateLayout();
+                                        addResizeObserver();
+                                    }} ref={mainImgRef} src={playHandle.imgUrl} alt={`Main Image: ${playHandle.backendRoute}`} />
 
 
 
-                                {
-                                    isOpenCharacterClickDisplay.isOpen &&
-                                    <CharacterClickDisplay
-                                        clickX={isOpenCharacterClickDisplay.xCoordinate}
-                                        clickY={isOpenCharacterClickDisplay.yCoordinate}
-                                        visualX={isOpenCharacterClickDisplay.visualXCoord}
-                                        visualY={isOpenCharacterClickDisplay.visualYCoord}
-                                        characters={charactersAvailable}
+                                    {
+                                        isOpenCharacterClickDisplay.isOpen &&
+                                        <CharacterClickDisplay
+                                            clickX={isOpenCharacterClickDisplay.xCoordinate}
+                                            clickY={isOpenCharacterClickDisplay.yCoordinate}
+                                            visualX={isOpenCharacterClickDisplay.visualXCoord}
+                                            visualY={isOpenCharacterClickDisplay.visualYCoord}
+                                            characters={charactersAvailable}
 
-                                        characterGuess={characterGuess}
+                                            characterGuess={characterGuess}
 
 
-                                    />
+                                        />
 
-                                }
+                                    }
 
-                                <Guess currGuesses={currGuesses} />
+                                    <Guess currGuesses={currGuesses} />
+
+                                </div>
 
                             </div>
 

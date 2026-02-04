@@ -84,7 +84,7 @@
 
     overflow: auto;
 
-
+/* 
     & img {
         display: block;
 
@@ -114,7 +114,7 @@
 
 
         
-    }
+    } */
 
 
 
@@ -122,3 +122,33 @@
 
 
 
+.imgScaleContainer{
+    position: relative;
+
+
+    & > img {
+        display: block;
+
+        width: 100%;
+        height: 100%;
+    }
+
+}
+
+.imgScaleContainer[data-img-ratio="wide"]{
+
+    height: 100%;
+
+    & > img{
+
+    }
+}
+
+.imgScaleContainer[data-img-ratio="tall"]{
+    
+    width: 100%;
+
+    & > img{
+
+    }
+}

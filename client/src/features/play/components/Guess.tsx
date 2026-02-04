@@ -18,8 +18,8 @@ export function Guess({
                     return (
                         <div style={
                             {
-                                top: guess.yCoord,
-                                left: guess.xCoord
+                                top: `${guess.yCoord * 100}%`,
+                                left: `${guess.xCoord * 100}%`
                             }
                         } key={guess.guess + guess.xCoord + guess.yCoord + indx} className={`${guess.guess === "correct" && styles.correctGuessContainer} ${styles.guessContainer}`}>
                             {

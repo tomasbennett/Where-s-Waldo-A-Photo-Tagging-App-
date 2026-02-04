@@ -31,9 +31,8 @@ export function CharacterClickDisplay({
     return (
         <div className={styles.characterClickDisplay} style={
             {
-                top: visualY,
-                left: visualX,
-                // display: display
+                top: `${visualY * 100}%`,
+                left: `${visualX * 100}%`,
             }
         }>
             {characters.map((character, indx) => {

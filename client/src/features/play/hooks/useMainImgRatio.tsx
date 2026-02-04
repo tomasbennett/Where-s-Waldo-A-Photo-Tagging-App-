@@ -1,45 +1,51 @@
 import { useRef, useState, useEffect, RefObject } from "react";
+import { IImgNaturalSize } from "../models/IImgNaturalSize";
 
 type IUseMainImgRatioProps = {
     mainImgRef: RefObject<HTMLImageElement | null>;
-    mainOverflowContainerRef: RefObject<HTMLDivElement | null>
+    mainOverflowContainerRef: RefObject<HTMLDivElement | null>,
+    imgScaleContainerRef: RefObject<HTMLDivElement | null>,
+    imgNaturalSizeRef: RefObject<IImgNaturalSize | null>
 }
 
 export function useMainImgRatio({
     mainImgRef,
-    mainOverflowContainerRef
+    mainOverflowContainerRef,
+    imgScaleContainerRef,
+    imgNaturalSizeRef
 }: IUseMainImgRatioProps) {
     
 
 
     const [mainImgRatio, setMainImgRatio] = useState<"wide" | "tall" | null>(null);
-
-
+    
     const calculateLayout = () => {
-        if (!mainImgRef.current || !mainOverflowContainerRef.current) {
+        if (
+            !mainImgRef.current || 
+            !mainOverflowContainerRef.current || 
+            !imgScaleContainerRef.current || 
+            !imgNaturalSizeRef.current
+        ) {
             console.log("One or more refs are null, cannot calculate layout!!!");
             return;
         }
-
+        
         const fullContainerWidth = mainOverflowContainerRef.current.offsetWidth;
         const fullContainerHeight = mainOverflowContainerRef.current.offsetHeight;
         const fullContainerAspectRatio = fullContainerWidth / fullContainerHeight;
+        
 
-
-        const imgNaturalWidth = mainImgRef.current.naturalWidth;
-        const imgNaturalHeight = mainImgRef.current.naturalHeight;
-        const imgAspectRatio = imgNaturalWidth / imgNaturalHeight;
 
         console.log(`The full container width should be: ${fullContainerWidth}`);
         console.log(`The full container height should be: ${fullContainerHeight}`);
 
-        console.log(`Is the container aspect ratio greater than img aspect ratio should be no space if true::: ${fullContainerAspectRatio > imgAspectRatio}`);
+        console.log(`Is the container aspect ratio greater than img aspect ratio should be no space if true::: ${fullContainerAspectRatio > imgNaturalSizeRef.current.naturalAspectRatio}`);
 
 
         //WE HAVE TO FIGURE THIS OUT
+        
 
-
-        if (imgAspectRatio > fullContainerAspectRatio) {
+        if (imgNaturalSizeRef.current.naturalAspectRatio > fullContainerAspectRatio) {
             // WIDE IMAGE
             setMainImgRatio("wide");
 

@@ -3,12 +3,16 @@
 
     overflow: hidden;
 
+    transform: translate(-50%, -50%);
+
     width: 4rem;
     aspect-ratio: 1;
 
     display: flex;
     justify-content: center;
     align-items: center;
+
+    filter: drop-shadow(0 0 .6rem black);
 
 
     & svg{
