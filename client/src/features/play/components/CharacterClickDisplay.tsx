@@ -55,8 +55,9 @@ export function CharacterClickDisplay({
                 return (
                     <React.Fragment key={character.name + indx}>
 
-                        <div onClick={async () => {
-                            await characterGuess(character, clickX, clickY, visualX, visualY);
+                        <div onClick={() => {
+                            console.log("character guess runs");
+                            characterGuess(character, clickX, clickY, visualX, visualY);
                         }} className={styles.characterContainer}>
 
                             <div className={styles.imgContainer}>

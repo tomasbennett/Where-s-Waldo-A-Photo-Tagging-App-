@@ -19,14 +19,16 @@ type IFinishedFormProps = {
     timeInMs: number | null,
     gameSessionId: string,
     gameName: IAllGameID,
-    setSecondsElapsed: React.Dispatch<React.SetStateAction<number>>
+    setSecondsElapsed: React.Dispatch<React.SetStateAction<number>>,
+    usernameSubmittedRef: RefObject<boolean>
 }
 
 export function FinishedForm({
     timeInMs,
     gameSessionId,
     gameName,
-    setSecondsElapsed
+    setSecondsElapsed,
+    usernameSubmittedRef
 }: IFinishedFormProps) {
     const dialogRef = useRef<HTMLDialogElement | null>(null);
 
@@ -74,6 +76,7 @@ export function FinishedForm({
             if (leaderBoardEntryResult.success) {
                 setSecondsElapsed(0);
                 dialogRef.current?.close();
+                usernameSubmittedRef.current = true;
                 navigate(`/leaderboard/${gameName}`, {
                     replace: true
                 });
@@ -212,7 +215,7 @@ export function FinishedForm({
                                     "Submit"
 
                             }</button>
-                            <Link to={`/home`} className={styles.returnHomeBtn}>Return Home</Link>
+                            <Link to={`/home`} replace={true} className={styles.returnHomeBtn}>Return Home</Link>
                         </div>
 
                     </form>

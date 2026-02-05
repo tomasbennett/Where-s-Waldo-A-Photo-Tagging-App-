@@ -183,9 +183,12 @@ export function PlayLayout() {
 
     useEffect(() => {
         function handleClickOutside(e: MouseEvent) {
-            if (!mainImgRef.current) return;
+            if (!mainImgRef.current || !clickDisplayCharacterBoxRef.current) return;
 
-            if (!mainImgRef.current.contains(e.target as Node)) {
+            if (
+                !mainImgRef.current.contains(e.target as Node) && 
+                !clickDisplayCharacterBoxRef.current.contains(e.target as Node)
+            ) {
                 setIsOpenCharacterClickDisplay({
                     isOpen: false,
                     xCoordinate: 0,
@@ -195,7 +198,7 @@ export function PlayLayout() {
                     visualXCoord: 0,
                     visualYCoord: 0
                 });
-                
+
             }
         }
 
@@ -208,11 +211,14 @@ export function PlayLayout() {
 
 
 
-    const [gameSession, setGameSession] = useState<string | null>(null);
+    const gameSessionRef = useRef<string | null>(null);
     const [isGameSessionLoading, setIsGameSessionLoading] = useState<boolean>(true);
 
     const navigate = useNavigate();
     const location = useLocation();
+
+    const usernameSubmittedRef = useRef<boolean>(false);
+    
 
     useEffect(() => {
         //START GAME SESSION HERE
@@ -220,7 +226,7 @@ export function PlayLayout() {
         async function getGameSession() {
             try {
                 setIsGameSessionLoading(true);
-                setGameSession(null);
+                gameSessionRef.current = null;
 
                 const response = await fetch(`${domain}/api/start/${playHandle!.gameName}`, {
                     method: "POST"
@@ -231,7 +237,7 @@ export function PlayLayout() {
                 const gameSessionResult = StartGameResponseSchema.safeParse(jsonData);
                 if (gameSessionResult.success) {
                     console.log(gameSessionResult.data.gameSessionId);
-                    setGameSession(gameSessionResult.data.gameSessionId);
+                    gameSessionRef.current = gameSessionResult.data.gameSessionId;
                     return;
                 }
 
@@ -306,68 +312,23 @@ export function PlayLayout() {
 
         return () => {
             //END GAME SESSION IF THERE EXISTS ONE
-
-            async function deleteGameSession() {
-                try {
-                    if (!gameSession) {
-                        return;
-                    }
-
-                    setIsGameSessionLoading(true);
-
-                    const deleteGameSessionResponse = await fetch(`${domain}/api/game/${gameSession}`, {
-                        method: "DELETE"
-                    });
-
-                    if (deleteGameSessionResponse.status === 204) {
-                        setGameSession(null);
-                        return;
-                    }
-
-                    const jsonData = await deleteGameSessionResponse.json();
-
-                    const errorResult = APIErrorSchema.safeParse(jsonData);
-                    if (errorResult.success) {
-                        console.error(errorResult.data);
-                        return;
-                    }
-
-                    console.error(
-                        notExpectedFormatError
-                    );
-
-
-
-                } catch (error) {
-                    if (error instanceof Error) {
-                        const errorMessage: ICustomErrorResponse = {
-                            ok: false,
-                            status: 0,
-                            message: error.message
-                        }
-
-                        console.error(errorMessage);
-
-                        return;
-                    }
-
-                    console.error({
-                        ok: false,
-                        status: 0,
-                        message: "Unexpected error occurred!!!"
-                    });
-
-                    return;
-
-                } finally {
-                    setIsGameSessionLoading(false);
-
-                }
+            //CHANGE GAMESSION TO A REF
+            //CHECK IF THE USER HAS SUBMITTED USERNAME
+            if (usernameSubmittedRef.current) {
+                usernameSubmittedRef.current = false;
+                return;
 
             }
 
-            deleteGameSession();
+            if (!(gameSessionRef.current)) {
+                return;
+            }
 
+            fetch(`${domain}/api/game/${gameSessionRef.current}`, {
+                method: "DELETE"
+            }).catch(console.error);
+
+            
 
         };
     }, [location.pathname]);
@@ -382,7 +343,10 @@ export function PlayLayout() {
 
     const characterGuess = async (character: ICharacter, xCoordinate: number, yCoordinate: number, visualX: number, visualY: number) => {
         try {
-            if (!gameSession) {
+            
+
+            if (!gameSessionRef.current) {
+                console.log("THERE IS NO GAME SESSION REF!!!");
                 return;
             }
 
@@ -400,7 +364,7 @@ export function PlayLayout() {
             });
 
             const guess: IRequestGuess = {
-                gameSessionId: gameSession,
+                gameSessionId: gameSessionRef.current,
                 gameName: playHandle.gameName,
                 characterName: guessedCharacter.name,
                 xCoordinate,
@@ -415,6 +379,7 @@ export function PlayLayout() {
                     "Content-Type": "application/json"
                 },
             });
+            console.log("GUESS CHARACTER FETCH ACTIVELY GETS SOMETHING BACK!!!");
 
             const jsonData = await guessCharacterResponse.json();
 
@@ -652,8 +617,9 @@ export function PlayLayout() {
             <FinishedForm
                 setSecondsElapsed={setSecondsElapsed}
                 gameName={playHandle.gameName as IAllGameID}
-                gameSessionId={gameSession ?? ""}
+                gameSessionId={gameSessionRef.current ?? ""}
                 timeInMs={timeInMs}
+                usernameSubmittedRef={usernameSubmittedRef}
             />
 
         </>
